@@ -25,6 +25,9 @@
     <Filter Include="TextureLoader">
       <UniqueIdentifier>{776967fb-a22c-46c8-91ae-fd4eb0a4fbb1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Loader">
+      <UniqueIdentifier>{f039a065-2964-46e3-a0aa-add701722421}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InitShader.cpp">
@@ -68,6 +71,12 @@
     </ClCompile>
     <ClCompile Include="Common\Timer.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ModelPool.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjLoader.cpp">
+      <Filter>Loader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +124,12 @@
     </ClInclude>
     <ClInclude Include="Common\TypeDefine.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ModelPool.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjLoader.h">
+      <Filter>Loader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

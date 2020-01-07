@@ -25,6 +25,10 @@ typedef Angel::vec4  point4;
 
 #define LIGHTCOUNT 4
 
+#define Type_3DMax 'M'
+#define Type_Blender 'B'
+#define Type_Cinema_4D 'C'
+
 
 class CShape 
 {

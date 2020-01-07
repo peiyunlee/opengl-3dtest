@@ -14,8 +14,9 @@
 #include "Common/CWireCube.h"
 #include "Common/CChecker.h"
 #include "Common/CCamera.h"
-#include "Common\CLineSegment.h"
+#include "Common/CLineSegment.h"
 #include "png_loader.h"
+#include "Common/ModelPool.h"
 
 
 #define SPACE_KEY 32
@@ -34,7 +35,7 @@ mat4 g_mxProjection;
 
 // For Objects
 //CChecker      *g_pCheckerBottom, *g_pCheckerTop;
-CSolidCube    *g_pCube;
+//CSolidCube    *g_pCube;
 CSolidSphere  *g_pSphere;
 
 CQuad *g_LeftWall, *g_RightWall;
@@ -46,6 +47,9 @@ CQuad *g_BottomWall, *g_TopWall;
 GLfloat g_fRadius = 8.0;
 GLfloat g_fTheta = 45.0f*DegreesToRadians;
 GLfloat g_fPhi = 45.0f*DegreesToRadians;
+
+//ModelPool *_pTeaPot;
+ModelPool *g_pCat;
 
 //----------------------------------------------------------------------------
 // Part 2 : for single light source
@@ -187,7 +191,9 @@ void init( void )
 	bool bPDirty;
 	mat4 mpx = camera->getProjectionMatrix(bPDirty);
 
-	g_pCube->SetProjectionMatrix(mpx);
+
+	g_pCat->SetProjectionMatrix(mpx);
+	//_pTeaPot->SetProjectionMatrix(mpx);
 	g_pSphere->SetProjectionMatrix(mpx);
 
 	for (int i = 0; i < LIGHTCOUNT; i++)
@@ -211,7 +217,8 @@ void GL_Display( void )
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the window
 
 	g_pSphere->Draw();
-	g_pCube->Draw();
+	g_pCat->Draw();
+	//_pTeaPot->Draw();
 
 	g_BottomWall->Draw();
 	g_LeftWall->Draw();
@@ -259,7 +266,8 @@ void onFrameMove(float delta)
 	auto camera = CCamera::getInstance();
 	mvx = camera->getViewMatrix(bVDirty);
 	if (bVDirty) {
-		g_pCube->SetViewMatrix(mvx);
+		g_pCat->SetViewMatrix(mvx);
+		//_pTeaPot->SetViewMatrix(mvx);
 		g_pSphere->SetViewMatrix(mvx);
 		g_BottomWall->SetViewMatrix(mvx);
 		g_TopWall->SetViewMatrix(mvx);
@@ -289,7 +297,8 @@ void onFrameMove(float delta)
 	}
 
 	// 如果需要重新計算時，在這邊計算每一個物件的顏色
-	g_pCube->Update(g_Light, delta);
+	g_pCat->Update(g_Light, delta);
+	//_pTeaPot->Update(g_Light, delta);
 	g_pSphere->Update(g_Light, delta);
 	g_BottomWall->Update(g_Light, delta);
 	g_TopWall->Update(g_Light, delta);
@@ -357,7 +366,8 @@ void Win_Keyboard( unsigned char key, int x, int y )
 //----------------------------------------------------------------------------
     case 033:
 		glutIdleFunc( NULL );
-		delete g_pCube;
+		delete g_pCat;
+		//delete _pTeaPot;
 		delete g_pSphere;
 		//delete g_pCheckerBottom;
 		for (int i = 0; i < LIGHTCOUNT; i++)
@@ -559,17 +569,29 @@ void RoomObjGenerator() {
 	g_BackWall->SetShadingMode(GOURAUD_SHADING);
 	g_BackWall->SetShader();
 
-	g_pCube = new CSolidCube;
-//#ifdef SETTING_MATERIALS
-//	g_pCube->SetMaterials(vec4(0.15f, 0.15f, 0.15f, 1.0f), vec4(0.85f, 0, 0, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
-//	g_pCube->SetKaKdKsShini(0.15f, 0.8f, 0.2f, 2);
-//#endif
-	g_pCube->SetShader();
+//	g_pCube = new CSolidCube;
+////#ifdef SETTING_MATERIALS
+////	g_pCube->SetMaterials(vec4(0.15f, 0.15f, 0.15f, 1.0f), vec4(0.85f, 0, 0, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+////	g_pCube->SetKaKdKsShini(0.15f, 0.8f, 0.2f, 2);
+////#endif
+//	g_pCube->SetShader();
+//	vT.x = 7.0; vT.y = 0.5; vT.z = -6.0;
+//	mxT = Translate(vT);
+//	g_pCube->SetTRSMatrix(mxT);
+//	g_BackWall->SetColor(vec4(0.78f, 0.21f, 0.22f, 1.0f));
+//	g_pCube->SetShadingMode(GOURAUD_SHADING);
+
 	vT.x = 7.0; vT.y = 0.5; vT.z = -6.0;
 	mxT = Translate(vT);
-	g_pCube->SetTRSMatrix(mxT);
-	g_BackWall->SetColor(vec4(0.78f, 0.21f, 0.22f, 1.0f));
-	g_pCube->SetShadingMode(GOURAUD_SHADING);
+	g_pCat = new ModelPool("Model/cat.obj", Type_3DMax);
+	g_pCat->SetTRSMatrix(mxT*RotateY(225.0f)*Scale(0.004f, 0.004f, 0.004f));
+	g_pCat ->SetMaterials(vec4(0), vec4(0.75f, 0.75f, 0.75f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	g_pCat->SetKaKdKsShini(0.15f, 0.8f, 0.2f, 2);
+
+	//_pTeaPot = new ModelPool("Model/TeaPot.obj", Type_3DMax);
+	//_pTeaPot->SetTRSMatrix(Translate(vec4(0, 5.3f, 0, 1))*Scale(2.0f, 2.0f, 2.0f));
+	//_pTeaPot->SetMaterials(vec4(0), vec4(0.75f, 0.75f, 0.75f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	//_pTeaPot->SetKaKdKsShini(0.15f, 0.8f, 0.2f, 2);
 
 	g_pSphere = new CSolidSphere(1, 16, 16);
 	// Part 3 : materials

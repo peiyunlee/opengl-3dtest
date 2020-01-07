@@ -90,9 +90,11 @@
     <ClCompile Include="Common\CSolidSphere.cpp" />
     <ClCompile Include="Common\CWireCube.cpp" />
     <ClCompile Include="Common\CWireSphere.cpp" />
+    <ClCompile Include="Common\ModelPool.cpp" />
     <ClCompile Include="Common\Timer.cpp" />
     <ClCompile Include="HW2.cpp" />
     <ClCompile Include="InitShader.cpp" />
+    <ClCompile Include="ObjLoader.cpp" />
     <ClCompile Include="png_loader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -105,12 +107,14 @@
     <ClInclude Include="Common\CSolidSphere.h" />
     <ClInclude Include="Common\CWireCube.h" />
     <ClInclude Include="Common\CWireSphere.h" />
+    <ClInclude Include="Common\ModelPool.h" />
     <ClInclude Include="Common\Timer.h" />
     <ClInclude Include="Common\TypeDefine.h" />
     <ClInclude Include="Header\Angel.h" />
     <ClInclude Include="Header\CheckError.h" />
     <ClInclude Include="Header\mat.h" />
     <ClInclude Include="Header\vec.h" />
+    <ClInclude Include="ObjLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fsCubeMapping.glsl" />
