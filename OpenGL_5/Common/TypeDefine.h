@@ -16,6 +16,7 @@ typedef struct MaterialParameters {
 
 typedef struct LightSourceParameters
 {
+	int type;
 	color4 ambient;
 	color4 diffuse;
 	color4 specular;
@@ -29,6 +30,7 @@ typedef struct LightSourceParameters
 	float constantAttenuation;
 	float linearAttenuation;
 	float quadraticAttenuation;
+	int isLighting;
 
 	void UpdateDirection() {
 		spotDirection.x = spotTarget.x - position.x;

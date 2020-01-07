@@ -62,19 +62,40 @@ point4  g_vAt(0.0, 0.0, 0.0, 1.0);
 vec4    g_vUp(0.0, 1.0, 0.0, 0.0);
 
 LightSource g_Light[LIGHTCOUNT] = {
-	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
-	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // diffuse
-	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
-	point4(g_fLightRadius, g_fLightRadius, 0.0f, 1.0f),   // position
-	point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
-	vec3(0.0f, 0.0f, 0.0f),			  //spotTarget
-	vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
-	1.0f	,	// spotExponent(parameter e); cos^(e)(phi) 
-	45.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
-	1.0f	,	// spotCosCutoff; // (range: [1.0,0.0],-1.0), 照明方向與被照明點之間的角度取 cos 後, cut off 的值
-	1	,	// constantAttenuation	(a + bd + cd^2)^-1 中的 a, d 為光源到被照明點的距離
-	0	,	// linearAttenuation	    (a + bd + cd^2)^-1 中的 b
-	0		// quadraticAttenuation (a + bd + cd^2)^-1 中的 c
+	{
+		0,
+		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
+		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // diffuse
+		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
+		point4(g_fLightRadius, g_fLightRadius, 0.0f, 1.0f),   // position
+		point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
+		vec3(0.0f, 0.0f, 0.0f),			  //spotTarget
+		vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
+		1.0f	,	// spotExponent(parameter e); cos^(e)(phi) 
+		45.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
+		1.0f	,	// spotCosCutoff; // (range: [1.0,0.0],-1.0), 照明方向與被照明點之間的角度取 cos 後, cut off 的值
+		1	,	// constantAttenuation	(a + bd + cd^2)^-1 中的 a, d 為光源到被照明點的距離
+		0	,	// linearAttenuation	    (a + bd + cd^2)^-1 中的 b
+		0	,	// quadraticAttenuation (a + bd + cd^2)^-1 中的 c
+		1
+	},
+	{
+		1,
+		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
+		color4(g_fLightR, 0, 0, 1.0f), // diffuse
+		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
+		point4(4.0f, 4.0f, 0.0f, 1.0f),   // position
+		point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
+		vec3(0.0f, 0.0f, 0.0f),  // spotTarget
+		vec3(0.0f, 0.0f, 0.0f),  // spotDirection
+		1.0f,		// spotExponent(parameter e); cos^(e)(phi) 
+		45.0f,	// spotCutoff;// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
+		0.707f,	// spotCosCutoff = cos(spotCutoff) ; spot 的照明範圍取 cos
+		1,	// constantAttenuation(a + b*d + c*d^2)^-1 中的 a, 
+		0,	// linearAttenuation    (a + bd + cd^2)^-1 中的 b
+		0,	// quadraticAttenuation (a + bd + cd^2)^-1 中的 c
+		1
+	},
 };
 
 CWireSphere *g_pLight[LIGHTCOUNT];
@@ -113,7 +134,7 @@ void init( void )
 		mxT = Translate(g_Light[i].position);
 		g_pLight[i]->SetTRSMatrix(mxT);
 		g_pLight[i]->SetColor(g_Light[i].diffuse);
-		g_pLight[i]->SetLightingDisable();
+		//g_pLight[i]->SetLightingDisable();
 	}
 
 
@@ -217,16 +238,6 @@ void onFrameMove(float delta)
 		UpdateLightPosition(delta);
 	}
 
-	// 如果需要重新計算時，在這邊計算每一個物件的顏色
-	//g_pCheckerBottom->Update(delta, g_Light1);
-	//g_pCube->Update(delta, g_Light);
-	//g_pSphere->Update(delta, g_Light);
-	//g_BottomWall->Update(delta, g_Light);
-	//g_TopWall->Update(delta, g_Light);
-	//g_LeftWall->Update(delta, g_Light);
-	//g_RightWall->Update(delta, g_Light);
-	//g_FrontWall->Update(delta, g_Light);
-	//g_BackWall->Update(delta, g_Light);
 
 
 	for (int i = 0; i < LIGHTCOUNT; i++)
@@ -234,14 +245,24 @@ void onFrameMove(float delta)
 		g_pLight[i]->Update(delta);
 	}
 
-	g_pCube->Update(delta , g_Light[0]);
-	g_pSphere->Update(delta , g_Light[0]);
-	g_BottomWall->Update(delta , g_Light[0]);
-	g_TopWall->Update(delta , g_Light[0]);
-	g_LeftWall->Update(delta , g_Light[0]);
-	g_RightWall->Update(delta , g_Light[0]);
-	g_FrontWall->Update(delta , g_Light[0]);
-	g_BackWall->Update(delta , g_Light[0]);
+	// 如果需要重新計算時，在這邊計算每一個物件的顏色
+	g_pCube->Update(g_Light, delta);
+	g_pSphere->Update(g_Light, delta);
+	g_BottomWall->Update(g_Light, delta);
+	g_TopWall->Update(g_Light, delta);
+	g_LeftWall->Update(g_Light, delta);
+	g_RightWall->Update(g_Light, delta);
+	g_FrontWall->Update(g_Light, delta);
+	g_BackWall->Update(g_Light, delta);
+
+	//g_pCube->Update(delta , g_Light[0]);
+	//g_pSphere->Update(delta , g_Light[0]);
+	//g_BottomWall->Update(delta , g_Light[0]);
+	//g_TopWall->Update(delta , g_Light[0]);
+	//g_LeftWall->Update(delta , g_Light[0]);
+	//g_RightWall->Update(delta , g_Light[0]);
+	//g_FrontWall->Update(delta , g_Light[0]);
+	//g_BackWall->Update(delta , g_Light[0]);
 
 	GL_Display();
 }
@@ -445,9 +466,10 @@ void RoomObjGenerator() {
 	vT.x = 0.0f; vT.y = 20.0f; vT.z = 0;
 	mxT = Translate(vT);
 	g_TopWall = new CQuad;
-	g_TopWall->SetMaterials(vec4(0.15f, 0.15f, 0.15f, 1.0f), vec4(0.85, 0.85f, 0.85, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	//g_TopWall->SetMaterials(vec4(0.15f, 0.15f, 0.15f, 1.0f), vec4(0.85, 0.85f, 0.85, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	g_TopWall->SetColor(vec4(0.6f));
 	g_TopWall->SetTRSMatrix(mxT*RotateZ(180.0f)*Scale(20.0f, 1, 20.0f));
+	g_TopWall->SetMaterials(vec4(0.0f, 0.0f, 0.0f, 1.0f), vec4(0.5f, 0.5f, 0.5f, 1), vec4(0.5f, 0.5f, 0.5f, 1.0f));
 	g_TopWall->SetKaKdKsShini(0, 0.8f, 0.5f, 1);
 	g_TopWall->SetShadingMode(GOURAUD_SHADING);
 	g_TopWall->SetShader();
@@ -455,9 +477,10 @@ void RoomObjGenerator() {
 	vT.x = -10.0f; vT.y = 10.0f; vT.z = 0;
 	mxT = Translate(vT);
 	g_LeftWall = new CQuad;
-	g_LeftWall->SetMaterials(vec4(0.15f, 0.15f, 0.15f, 1.0f), vec4(0.85, 0.85f, 0.85, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	//g_LeftWall->SetMaterials(vec4(0.15f, 0.15f, 0.15f, 1.0f), vec4(0.85, 0.85f, 0.85, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	g_LeftWall->SetColor(vec4(0.6f));
 	g_LeftWall->SetTRSMatrix(mxT*RotateZ(-90.0f)*Scale(20.0f, 1, 20.0f));
+	g_LeftWall->SetMaterials(vec4(0.0f, 0.0f, 0.0f, 1.0f), vec4(0.5f, 0.5f, 0.5f, 1), vec4(0.5f, 0.5f, 0.5f, 1.0f));
 	g_LeftWall->SetKaKdKsShini(0, 0.8f, 0.5f, 1);
 	g_LeftWall->SetShadingMode(GOURAUD_SHADING);
 	g_LeftWall->SetShader();

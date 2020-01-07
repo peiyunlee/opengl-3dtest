@@ -23,7 +23,7 @@ typedef Angel::vec4  point4;
 
 #define SPOT_LIGHT 1
 
-#define LIGHTCOUNT 1
+#define LIGHTCOUNT 2
 
 
 class CShape 
@@ -48,20 +48,30 @@ protected:
 	GLuint  m_uiBuffer;
 
 #ifdef LIGHTING_WITHGPU
-	point4  m_vLightInView;	 // 方畒夹竚
-	GLuint  m_uiLightInView;	 // 方 shader 竚
-	GLuint  m_uiAmbient;		 // light's ambient  籔 Object's ambient  籔 ka 縩
-	GLuint  m_uiDiffuse;		 // light's diffuse  籔 Object's diffuse  籔 kd 縩
-	GLuint  m_uiSpecular;	 // light's specular 籔 Object's specular 籔 ks 縩
+	point4  m_vLightInView[LIGHTCOUNT];	 // 方畒夹竚
+	GLuint  m_uiLightInView[LIGHTCOUNT];	 // 方 shader 竚
+	GLuint  m_uiAmbient[LIGHTCOUNT];		 // light's ambient  籔 Object's ambient  籔 ka 縩
+	GLuint  m_uiDiffuse[LIGHTCOUNT];
+	GLuint  m_uiDiffuseProduct[LIGHTCOUNT];		 // light's diffuse  籔 Object's diffuse  籔 kd 縩
+	GLuint  m_uiSpecular[LIGHTCOUNT];	 // light's specular 籔 Object's specular 籔 ks 縩
 	GLuint  m_uiShininess;
-	GLuint  m_uiLighting;
+	GLuint  m_uiLighting[LIGHTCOUNT];
+	GLuint  m_uiSpotCosCutoff[LIGHTCOUNT];
+	GLuint  m_uiLightType[LIGHTCOUNT];
+	GLuint  m_uiLightDir[LIGHTCOUNT];
+	GLuint  m_uiSpotExponent[LIGHTCOUNT];
 
 	LightSource m_Light1;
 
-	color4 m_AmbientProduct;
-	color4 m_DiffuseProduct;
-	color4 m_SpecularProduct;
-	int    m_iLighting;	// 砞﹚琌璶ゴ縊
+	color4 m_Diffuse[LIGHTCOUNT];
+	color4 m_AmbientProduct[LIGHTCOUNT];
+	color4 m_DiffuseProduct[LIGHTCOUNT];
+	color4 m_SpecularProduct[LIGHTCOUNT];
+	vec3 m_LightDir[LIGHTCOUNT];
+	float m_SpotExponent[LIGHTCOUNT];
+	float m_spotCosCutoff[LIGHTCOUNT];
+	int lightType[LIGHTCOUNT];
+	int    m_iLighting[LIGHTCOUNT];	// 砞﹚琌璶ゴ縊
 #endif
 
 	// For Matrices
@@ -82,6 +92,8 @@ protected:
 	void		CreateBufferObject();
 	void		DrawingSetShader();
 	void		DrawingWithoutSetShader();
+	void SetAPI();
+
 
 public:
 	CShape();
@@ -90,6 +102,7 @@ public:
 	virtual void DrawW() = 0; // Drawing without setting shaders
 	virtual void Update(float dt, point4 vLightPos, color4 vLightI) = 0;
 	virtual	void Update(float dt, const LightSource &Lights) = 0;
+	virtual	void Update(const LightSource *Lights , float dt) = 0;
 	virtual void Update(float dt) = 0;
 
 	void SetShaderName(const char vxShader[], const char fsShader[]);
@@ -109,7 +122,7 @@ public:
 	vec4 PhongReflectionModel(vec4 vPoint, vec3 vNormal, const LightSource &Lights);
 
 #ifdef LIGHTING_WITHGPU
-	void SetLightingDisable() {m_iLighting = 0;}
+	void SetLightingDisable(int num) {m_iLighting[num] = 0;}
 #endif
 
 };

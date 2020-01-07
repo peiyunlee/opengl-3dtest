@@ -25,6 +25,7 @@ public:
 
 	void Update(float dt, point4 vLightPos, color4 vLightI);
 	void Update(float dt, const LightSource &Lights);
+	void Update(const LightSource *Lights , float dt);
 	void Update(float dt); // 不計算光源的照明
 
 	// Sphere 的繪製方始使用多組的 GL_TRIANGLE_STRIP 來繪製, 因此沒有辦法提供 Flat Shading，

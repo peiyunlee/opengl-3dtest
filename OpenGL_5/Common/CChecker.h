@@ -27,6 +27,7 @@ public:
 	void SetShadingMode(int iMode);
 	void Update(float dt, point4 vLightPos, color4 vLightI);
 	void Update(float dt,const LightSource &Lights);
+	void Update(const LightSource &Lights, float dt);
 	void Draw();
 
 	// For setting materials 

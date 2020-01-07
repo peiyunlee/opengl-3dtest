@@ -18,6 +18,7 @@ public:
 
 	void Update(float dt, point4 vLightPos, color4 vLightI);
 	void Update(float dt, const LightSource &Lights);
+	void Update(const LightSource *Lights , float dt);
 	void Update(float dt); // 不計算光源的照明
 
 	GLuint GetShaderHandle() { return m_uiProgram;} 

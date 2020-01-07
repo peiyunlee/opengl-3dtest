@@ -176,18 +176,18 @@ void CSolidSphere::RenderWithGouraudShading(vec4 vLightPos, color4 vLightI)
 void CSolidSphere::Update(float dt, point4 vLightPos, color4 vLightI)
 {
 #ifdef LIGHTING_WITHCPU
-	if (m_bViewUpdated || m_bTRSUpdated ) { // Model View 的相關矩陣內容有更動
+	if (m_bViewUpdated || m_bTRSUpdated) { // Model View 的相關矩陣內容有更動
 		m_mxMVFinal = m_mxView * m_mxTRS;
-		m_mxMV3X3Final = mat3(
-			m_mxMVFinal._m[0].x,  m_mxMVFinal._m[1].x, m_mxMVFinal._m[2].x,
-			m_mxMVFinal._m[0].y,  m_mxMVFinal._m[1].y, m_mxMVFinal._m[2].y,
-			m_mxMVFinal._m[0].z,  m_mxMVFinal._m[1].z, m_mxMVFinal._m[2].z);
+		m_mxMV3X3Final = mat3(	// 只取前面的 3X3 矩陣的內容
+			m_mxMVFinal._m[0].x, m_mxMVFinal._m[1].x, m_mxMVFinal._m[2].x,
+			m_mxMVFinal._m[0].y, m_mxMVFinal._m[1].y, m_mxMVFinal._m[2].y,
+			m_mxMVFinal._m[0].z, m_mxMVFinal._m[1].z, m_mxMVFinal._m[2].z);
 #ifdef GENERAL_CASE
-		m_mxITMV = InverseTransposeMatrix(m_mxMVFinal); 
+		m_mxITMV = InverseTransposeMatrix(m_mxMVFinal);
 #endif
 		m_bViewUpdated = m_bTRSUpdated = false;
 	}
-	if( m_iMode == FLAT_SHADING )  RenderWithGouraudShading(vLightPos, vLightI);
+	if (m_iMode == FLAT_SHADING) RenderWithFlatShading(vLightPos, vLightI);
 	else RenderWithGouraudShading(vLightPos, vLightI);
 
 #else // Lighting With GPU
@@ -195,12 +195,20 @@ void CSolidSphere::Update(float dt, point4 vLightPos, color4 vLightI)
 		m_mxMVFinal = m_mxView * m_mxTRS;
 		m_bViewUpdated = m_bTRSUpdated = false;
 	}
-	m_vLightInView = m_mxView * vLightPos;		// 將 Light 轉換到鏡頭座標再傳入
+	for (int i = 0; i < 2; i++)
+	{
+		m_vLightInView[i] = m_mxView * vLightPos;		// 將 Light 轉換到鏡頭座標再傳入
+
+		m_DiffuseProduct[i] = m_Material.kd * m_Material.diffuse  * vLightI;
+		m_SpecularProduct[i] = m_Material.ks * m_Material.specular * vLightI;
+		m_AmbientProduct[i] = m_Material.ka * m_Material.ambient  * vLightI;
+	}
+
 	// 算出 AmbientProduct DiffuseProduct 與 SpecularProduct 的內容
-	m_AmbientProduct  = m_Material.ka * m_Material.ambient  * vLightI;
-	m_DiffuseProduct  = m_Material.kd * m_Material.diffuse  * vLightI;
-	m_SpecularProduct = m_Material.ks * m_Material.specular * vLightI;
+
+
 #endif
+
 }
 
 void CSolidSphere::Update(float dt, const LightSource &Lights)
@@ -209,15 +217,15 @@ void CSolidSphere::Update(float dt, const LightSource &Lights)
 	if (m_bViewUpdated || m_bTRSUpdated) { // Model View 的相關矩陣內容有更動
 		m_mxMVFinal = m_mxView * m_mxTRS;
 		m_mxMV3X3Final = mat3(
-			m_mxMVFinal._m[0].x,  m_mxMVFinal._m[1].x, m_mxMVFinal._m[2].x,
-			m_mxMVFinal._m[0].y,  m_mxMVFinal._m[1].y, m_mxMVFinal._m[2].y,
-			m_mxMVFinal._m[0].z,  m_mxMVFinal._m[1].z, m_mxMVFinal._m[2].z);
+			m_mxMVFinal._m[0].x, m_mxMVFinal._m[1].x, m_mxMVFinal._m[2].x,
+			m_mxMVFinal._m[0].y, m_mxMVFinal._m[1].y, m_mxMVFinal._m[2].y,
+			m_mxMVFinal._m[0].z, m_mxMVFinal._m[1].z, m_mxMVFinal._m[2].z);
 #ifdef GENERAL_CASE
-		m_mxITMV = InverseTransposeMatrix(m_mxMVFinal); 
+		m_mxITMV = InverseTransposeMatrix(m_mxMVFinal);
 #endif
 		m_bViewUpdated = m_bTRSUpdated = false;
 	}
-	if (m_iMode == FLAT_SHADING)  RenderWithGouraudShading(Lights);
+	if (m_iMode == FLAT_SHADING) RenderWithFlatShading(Lights);
 	else RenderWithGouraudShading(Lights);
 
 #else // Lighting With GPU
@@ -225,12 +233,49 @@ void CSolidSphere::Update(float dt, const LightSource &Lights)
 		m_mxMVFinal = m_mxView * m_mxTRS;
 		m_bViewUpdated = m_bTRSUpdated = false;
 	}
-	m_vLightInView = m_mxView * Lights.position;		// 將 Light 轉換到鏡頭座標再傳入
+	for (int i = 0; i < 2; i++)
+	{
+		m_vLightInView[i] = m_mxView * Lights.position;		// 將 Light 轉換到鏡頭座標再傳入
+
+		m_DiffuseProduct[i] = m_Material.kd * m_Material.diffuse  * Lights.diffuse;
+		m_SpecularProduct[i] = m_Material.ks * m_Material.specular * Lights.specular;
+		m_spotCosCutoff[i] = Lights.spotCosCutoff;
+		m_AmbientProduct[i] = m_Material.ka * m_Material.ambient  * Lights.ambient;
+	}
 	// 算出 AmbientProduct DiffuseProduct 與 SpecularProduct 的內容
-	m_AmbientProduct = m_Material.ka * m_Material.ambient  * Lights.ambient;
-	m_DiffuseProduct = m_Material.kd * m_Material.diffuse  * Lights.diffuse;
-	m_SpecularProduct = m_Material.ks * m_Material.specular * Lights.specular;
+
+
 #endif
+
+}
+
+void CSolidSphere::Update(const LightSource *Lights, float dt)
+{
+	if (m_bViewUpdated || m_bTRSUpdated) {
+		m_mxMVFinal = m_mxView * m_mxTRS;
+		m_mxMV3X3Final = mat3(	// 只取前面的 3X3 矩陣的內容
+			m_mxMVFinal._m[0].x, m_mxMVFinal._m[1].x, m_mxMVFinal._m[2].x,
+			m_mxMVFinal._m[0].y, m_mxMVFinal._m[1].y, m_mxMVFinal._m[2].y,
+			m_mxMVFinal._m[0].z, m_mxMVFinal._m[1].z, m_mxMVFinal._m[2].z);
+		m_bViewUpdated = m_bTRSUpdated = false;
+	}
+
+
+
+	for (int i = 0; i < LIGHTCOUNT; i++)
+	{
+		m_AmbientProduct[i] = m_Material.ka * m_Material.ambient  * Lights[i].ambient;
+		lightType[i] = Lights[i].type;
+		m_LightDir[i] = m_mxMV3X3Final * Lights[i].spotDirection;
+		m_SpotExponent[i] = Lights[i].spotExponent;
+		m_vLightInView[i] = m_mxView * Lights[i].position;
+		m_DiffuseProduct[i] = m_Material.kd * m_Material.diffuse  * Lights[i].diffuse;
+		m_Diffuse[i] = Lights[i].diffuse;
+		m_SpecularProduct[i] = m_Material.ks * m_Material.specular * Lights[i].specular;
+		m_spotCosCutoff[i] = Lights[i].spotCosCutoff;
+		m_iLighting[i] = Lights[i].isLighting;
+}
+
 }
 
 void CSolidSphere::Update(float dt)

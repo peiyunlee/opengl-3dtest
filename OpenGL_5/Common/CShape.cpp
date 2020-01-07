@@ -16,35 +16,39 @@ CShape::CShape()
 	// 預設為 RGBA 為 (0.5,0.5,0.5,1.0) , 由這個灰階顏色來代表的物件顏色
 	m_fColor[0] = 0.5f; m_fColor[1] = 0.5f; m_fColor[2] = 0.5f; m_fColor[3] = 1.0f;
 #ifdef LIGHTING_WITHGPU
-	m_iLighting = 1; // 預設接受燈光的照明
+	for (int i = 0; i < LIGHTCOUNT; i++)
+	{
+		m_iLighting[i] = 1; // 預設接受燈光的照明
+
+	}
 #endif
 }
 
 CShape::~CShape()
 {
-	if( m_pPoints  != NULL ) delete [] m_pPoints;  
-	if( m_pNormals != NULL ) delete	[] m_pNormals;
-	if( m_pColors  != NULL ) delete	[] m_pColors;
-	if( m_pTex != NULL ) delete	m_pTex;
+	if (m_pPoints != NULL) delete[] m_pPoints;
+	if (m_pNormals != NULL) delete[] m_pNormals;
+	if (m_pColors != NULL) delete[] m_pColors;
+	if (m_pTex != NULL) delete	m_pTex;
 
-	if( m_pVXshader != NULL ) delete [] m_pVXshader;
-	if( m_pFSshader != NULL ) delete [] m_pFSshader;
+	if (m_pVXshader != NULL) delete[] m_pVXshader;
+	if (m_pFSshader != NULL) delete[] m_pFSshader;
 }
 
 void CShape::CreateBufferObject()
 {
-    glGenVertexArrays( 1, &m_uiVao );
-    glBindVertexArray( m_uiVao );
+	glGenVertexArrays(1, &m_uiVao);
+	glBindVertexArray(m_uiVao);
 
-    // Create and initialize a buffer object
-    glGenBuffers( 1, &m_uiBuffer );
-    glBindBuffer( GL_ARRAY_BUFFER, m_uiBuffer );
-    glBufferData( GL_ARRAY_BUFFER, sizeof(vec4)*m_iNumVtx + sizeof(vec3)*m_iNumVtx + sizeof(vec4)*m_iNumVtx, NULL, GL_STATIC_DRAW );
+	// Create and initialize a buffer object
+	glGenBuffers(1, &m_uiBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_uiBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vec4)*m_iNumVtx + sizeof(vec3)*m_iNumVtx + sizeof(vec4)*m_iNumVtx, NULL, GL_STATIC_DRAW);
 	// sizeof(vec4)*m_iNumVtx + sizeof(vec3)*m_iNumVtx + sizeof(vec4)*m_iNumVtx <- vertices, normal and color
 
-    glBufferSubData( GL_ARRAY_BUFFER, 0, sizeof(vec4)*m_iNumVtx, m_pPoints );  // vertices
-	glBufferSubData( GL_ARRAY_BUFFER, sizeof(vec4)*m_iNumVtx, sizeof(vec3)*m_iNumVtx, m_pNormals ); // // vertices' normal
-	glBufferSubData( GL_ARRAY_BUFFER, sizeof(vec4)*m_iNumVtx+sizeof(vec3)*m_iNumVtx, sizeof(vec4)*m_iNumVtx, m_pColors ); // vertcies' Color
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vec4)*m_iNumVtx, m_pPoints);  // vertices
+	glBufferSubData(GL_ARRAY_BUFFER, sizeof(vec4)*m_iNumVtx, sizeof(vec3)*m_iNumVtx, m_pNormals); // // vertices' normal
+	glBufferSubData(GL_ARRAY_BUFFER, sizeof(vec4)*m_iNumVtx + sizeof(vec3)*m_iNumVtx, sizeof(vec4)*m_iNumVtx, m_pColors); // vertcies' Color
 }
 
 void CShape::SetShader(GLuint uiShaderHandle)
@@ -61,14 +65,6 @@ void CShape::SetShader(GLuint uiShaderHandle)
 	glEnableVertexAttribArray(vPosition);
 	glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 
-	GLuint vNormal = glGetAttribLocation(m_uiProgram, "vNormal");
-	glEnableVertexAttribArray(vNormal);
-	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(vec4)*m_iNumVtx));
-
-	GLuint vColorVtx = glGetAttribLocation(m_uiProgram, "vVtxColor");  // vertices' color 
-	glEnableVertexAttribArray(vColorVtx);
-	glVertexAttribPointer(vColorVtx, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(vec4)*m_iNumVtx + sizeof(vec3)*m_iNumVtx));
-
 	m_uiModelView = glGetUniformLocation(m_uiProgram, "ModelView");
 	// m_mxMVFinal , m_mxModelView 宣告時就是單位矩陣
 	glUniformMatrix4fv(m_uiModelView, 1, GL_TRUE, m_mxMVFinal);
@@ -80,71 +76,147 @@ void CShape::SetShader(GLuint uiShaderHandle)
 	m_uiColor = glGetUniformLocation(m_uiProgram, "vObjectColor");
 	glUniform4fv(m_uiColor, 1, m_fColor);
 
-#ifdef LIGHTING_WITHGPU
-	m_uiLightInView = glGetUniformLocation(m_uiProgram, "LightInView");
-	glUniform4fv(m_uiLightInView, 1, m_vLightInView);
 
-	m_uiAmbient = glGetUniformLocation(m_uiProgram, "AmbientProduct");
-	glUniform4fv(m_uiAmbient, 1, m_AmbientProduct);
+	GLuint vNormal = glGetAttribLocation(m_uiProgram, "vNormal");
+	glEnableVertexAttribArray(vNormal);
+	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(vec4)*m_iNumVtx));
 
-	m_uiDiffuse = glGetUniformLocation(m_uiProgram, "DiffuseProduct");
-	glUniform4fv(m_uiDiffuse, 1, m_DiffuseProduct);
+	GLuint vColorVtx = glGetAttribLocation(m_uiProgram, "vVtxColor");  // vertices' color 
+	glEnableVertexAttribArray(vColorVtx);
+	glVertexAttribPointer(vColorVtx, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(vec4)*m_iNumVtx + sizeof(vec3)*m_iNumVtx));
 
-	m_uiSpecular = glGetUniformLocation(m_uiProgram, "SpecularProduct");
-	glUniform4fv(m_uiSpecular, 1, m_SpecularProduct);
+	SetAPI();
 
 	m_uiShininess = glGetUniformLocation(m_uiProgram, "fShininess");
 	glUniform1f(m_uiShininess, m_Material.shininess);
 
-	m_uiLighting = glGetUniformLocation(m_uiProgram, "iLighting");
-	glUniform1i(m_uiLighting, m_iLighting);
 
-#endif
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+void CShape::SetAPI() {
+	/////Light0
+	m_uiLightInView[0] = glGetUniformLocation(m_uiProgram, "LightInView[0]");
+	glUniform4fv(m_uiLightInView[0], 1, m_vLightInView[0]);
+
+	m_uiDiffuseProduct[0] = glGetUniformLocation(m_uiProgram, "DiffuseProduct[0]");
+	glUniform4fv(m_uiDiffuseProduct[0], 1, m_DiffuseProduct[0]);
+
+	m_uiDiffuse[0] = glGetUniformLocation(m_uiProgram, "Diffuse[0]");
+	glUniform4fv(m_uiDiffuse[0], 1, m_Diffuse[0]);
+
+	m_uiSpecular[0] = glGetUniformLocation(m_uiProgram, "SpecularProduct[0]");
+	glUniform4fv(m_uiSpecular[0], 1, m_SpecularProduct[0]);
+
+	m_uiSpotCosCutoff[0] = glGetUniformLocation(m_uiProgram, "spotCosCutoff[0]");
+	glUniform1f(m_uiSpotCosCutoff[0], m_spotCosCutoff[0]);
+
+	m_uiAmbient[0] = glGetUniformLocation(m_uiProgram, "AmbientProduct[0]");
+	glUniform4fv(m_uiAmbient[0], 1, m_AmbientProduct[0]);
+
+	m_uiLightType[0] = glGetUniformLocation(m_uiProgram, "lightType[0]");
+	glUniform1i(m_uiLightType[0], lightType[0]);
+
+	m_uiLightDir[0] = glGetUniformLocation(m_uiProgram, "LightDir[0]");
+	glUniform4fv(m_uiLightDir[0], 1, m_LightDir[0]);
+
+	m_uiSpotExponent[0] = glGetUniformLocation(m_uiProgram, "spotExponent[0]");
+	glUniform1f(m_uiSpotExponent[0], m_SpotExponent[0]);
+
+	m_uiLighting[0] = glGetUniformLocation(m_uiProgram, "iLighting[0]");
+	glUniform1i(m_uiLighting[0], m_iLighting[0]);
+
+	/////Light1
+	m_uiLightInView[1] = glGetUniformLocation(m_uiProgram, "LightInView[1]");
+	glUniform4fv(m_uiLightInView[1], 1, m_vLightInView[1]);
+
+	m_uiDiffuseProduct[1] = glGetUniformLocation(m_uiProgram, "DiffuseProduct[1]");
+	glUniform4fv(m_uiDiffuseProduct[1], 1, m_DiffuseProduct[1]);
+
+	m_uiDiffuse[1] = glGetUniformLocation(m_uiProgram, "Diffuse[1]");
+	glUniform4fv(m_uiDiffuse[1], 1, m_Diffuse[1]);
+
+	m_uiSpecular[1] = glGetUniformLocation(m_uiProgram, "SpecularProduct[1]");
+	glUniform4fv(m_uiSpecular[1], 1, m_SpecularProduct[1]);
+
+	m_uiSpotCosCutoff[1] = glGetUniformLocation(m_uiProgram, "spotCosCutoff[1]");
+	glUniform1f(m_uiSpotCosCutoff[1], m_spotCosCutoff[1]);
+
+	m_uiAmbient[1] = glGetUniformLocation(m_uiProgram, "AmbientProduct[1]");
+	glUniform4fv(m_uiAmbient[1], 1, m_AmbientProduct[1]);
+
+	m_uiLightType[1] = glGetUniformLocation(m_uiProgram, "lightType[1]");
+	glUniform1i(m_uiLightType[1], lightType[1]);
+
+	m_uiLightDir[1] = glGetUniformLocation(m_uiProgram, "LightDir[1]");
+	glUniform4fv(m_uiLightDir[1], 1, m_LightDir[1]);
+
+	m_uiSpotExponent[1] = glGetUniformLocation(m_uiProgram, "spotExponent[1]");
+	glUniform1f(m_uiSpotExponent[1], m_SpotExponent[1]);
+
+	m_uiLighting[1] = glGetUniformLocation(m_uiProgram, "iLighting[1]");
+	glUniform1i(m_uiLighting[1], m_iLighting[1]);
+}
+
 void CShape::DrawingSetShader()
 {
-	glUseProgram( m_uiProgram );
-	glBindVertexArray( m_uiVao );
-	glUniformMatrix4fv( m_uiModelView, 1, GL_TRUE, m_mxMVFinal );
+	glUseProgram(m_uiProgram);
+	glBindVertexArray(m_uiVao);
+	glUniformMatrix4fv(m_uiModelView, 1, GL_TRUE, m_mxMVFinal);
 
-	if( m_bProjUpdated ) {
-		glUniformMatrix4fv( m_uiProjection, 1, GL_TRUE, m_mxProjection );
+	if (m_bProjUpdated) {
+		glUniformMatrix4fv(m_uiProjection, 1, GL_TRUE, m_mxProjection);
 		m_bProjUpdated = false;
 	}
-// 將資訊更新到 Shader 中
+	// 將資訊更新到 Shader 中
 #ifdef LIGHTING_WITHGPU
-	glUniform4fv(m_uiColor, 1, m_fColor ); 
-	glUniform4fv(m_uiLightInView, 1, m_vLightInView); 
-	glUniform4fv(m_uiAmbient, 1, m_AmbientProduct); 
-	glUniform4fv(m_uiDiffuse, 1, m_DiffuseProduct); 
-	glUniform4fv(m_uiSpecular, 1, m_SpecularProduct); 
-	glUniform1f(m_uiShininess, m_Material.shininess); 
-	glUniform1i(m_uiLighting, m_iLighting);
-#endif
 
+	glUniform4fv(m_uiColor, 1, m_fColor);
+	for (int i = 0; i < LIGHTCOUNT; i++)
+	{
+		glUniform1i(m_uiLightType[i], lightType[i]);
+		glUniform1f(m_uiSpotExponent[i], m_SpotExponent[i]);
+		glUniform3fv(m_uiLightDir[i], 1, m_LightDir[i]);
+		glUniform4fv(m_uiLightInView[i], 1, m_vLightInView[i]);
+		glUniform4fv(m_uiDiffuseProduct[i], 1, m_DiffuseProduct[i]);
+		glUniform4fv(m_uiDiffuse[i], 1, m_Diffuse[i]);
+		glUniform4fv(m_uiSpecular[i], 1, m_SpecularProduct[i]);
+		glUniform1f(m_uiSpotCosCutoff[i], m_spotCosCutoff[i]);
+		glUniform4fv(m_uiAmbient[i], 1, m_AmbientProduct[i]);
+		glUniform1i(m_uiLighting[i], m_iLighting[i]);
+	}
+	glUniform1f(m_uiShininess, m_Material.shininess);
+#endif
 }
 
 // 此處預設使用前一個描繪物件所使用的 Shader
 void CShape::DrawingWithoutSetShader()
 {
-	glBindVertexArray( m_uiVao );
-	glUniformMatrix4fv( m_uiModelView, 1, GL_TRUE, m_mxMVFinal );
+	glBindVertexArray(m_uiVao);
+	glUniformMatrix4fv(m_uiModelView, 1, GL_TRUE, m_mxMVFinal);
 
-	if( m_bProjUpdated ) {
-		glUniformMatrix4fv( m_uiProjection, 1, GL_TRUE, m_mxProjection );
+	if (m_bProjUpdated) {
+		glUniformMatrix4fv(m_uiProjection, 1, GL_TRUE, m_mxProjection);
 		m_bProjUpdated = false;
 	}
 #ifdef LIGHTING_WITHGPU
-	glUniform4fv(m_uiColor, 1, m_fColor ); 
-	glUniform4fv(m_uiLightInView, 1, m_vLightInView); 
-	glUniform4fv(m_uiAmbient,  1, m_AmbientProduct); 
-	glUniform4fv(m_uiDiffuse,  1, m_DiffuseProduct); 
-	glUniform4fv(m_uiSpecular, 1, m_SpecularProduct); 
-	glUniform1f(m_uiShininess, m_Material.shininess); 
-	glUniform1i(m_uiLighting, m_iLighting); 
+
+	glUniform4fv(m_uiColor, 1, m_fColor);
+	for (int i = 0; i < LIGHTCOUNT; i++)
+	{
+		glUniform1i(m_uiLightType[i], lightType[i]);
+		glUniform1f(m_uiSpotExponent[i], m_SpotExponent[i]);
+		glUniform3fv(m_uiLightDir[i], 1, m_LightDir[i]);
+		glUniform4fv(m_uiLightInView[i], 1, m_vLightInView[i]);
+		glUniform4fv(m_uiDiffuseProduct[i], 1, m_DiffuseProduct[i]);
+		glUniform4fv(m_uiSpecular[i], 1, m_SpecularProduct[i]);
+		glUniform1f(m_uiSpotCosCutoff[i], m_spotCosCutoff[i]);
+		glUniform4fv(m_uiAmbient[i], 1, m_AmbientProduct[i]);
+		glUniform4fv(m_uiDiffuse[i], 1, m_Diffuse[i]);
+		glUniform1i(m_uiLighting[i], m_iLighting[i]);
+	}
+	glUniform1f(m_uiShininess, m_Material.shininess);
 #endif
 }
 
