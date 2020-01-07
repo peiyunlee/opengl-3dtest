@@ -36,7 +36,7 @@ mat4 g_mxProjection;
 // For Objects
 //CChecker      *g_pCheckerBottom, *g_pCheckerTop;
 //CSolidCube    *g_pCube;
-CSolidSphere  *g_pSphere;
+//CSolidSphere  *g_pSphere;
 
 CQuad *g_LeftWall, *g_RightWall;
 CQuad *g_FrontWall, *g_BackWall;
@@ -48,14 +48,16 @@ GLfloat g_fRadius = 8.0;
 GLfloat g_fTheta = 45.0f*DegreesToRadians;
 GLfloat g_fPhi = 45.0f*DegreesToRadians;
 
-//ModelPool *_pTeaPot;
 ModelPool *g_pCat;
+ModelPool *g_pDeer;
+ModelPool *g_pRat;
+ModelPool *g_pWolf;
 
 //----------------------------------------------------------------------------
 // Part 2 : for single light source
 bool g_bAutoRotating = false;
 float g_fElapsedTime = 0;
-float g_fLightRadius = 6;
+float g_fLightRadius = 5;
 float g_fLightTheta = 0;
 
 float g_fLightR = 1.0f;
@@ -72,7 +74,7 @@ LightSource g_Light[LIGHTCOUNT] = {
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // diffuse
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
-		point4(g_fLightRadius, g_fLightRadius, 0.0f, 1.0f),   // position
+		point4(g_fLightRadius, g_fLightRadius+2.0, 0.0f, 1.0f),   // position
 		point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
 		vec3(0.0f, 0.0f, 0.0f),			  //spotTarget
 		vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
@@ -87,11 +89,11 @@ LightSource g_Light[LIGHTCOUNT] = {
 	{
 		1,
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
-		color4(1, 0, 0, 1.0f), // diffuse
+		color4(0, 0, 1.0, 1.0f), // diffuse
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
-		point4(-5.0f, 3.0f, -5.0f, 1.0f),   // position
+		point4(-5.0f, 8.0f, -5.0f, 1.0f),   // position
 		point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
-		vec3(-10.0f, 0.0f, -10.0f),			  //spotTarget
+		vec3(-7.0f, 2.0f, -7.0f),			  //spotTarget
 		vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
 		1.0f	,	// spotExponent(parameter e); cos^(e)(phi) 
 		45.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
@@ -104,11 +106,11 @@ LightSource g_Light[LIGHTCOUNT] = {
 	{
 		1,
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
-		color4(0, 1, 0, 1.0f), // diffuse
+		color4(0, 0, 0, 1.0f), // diffuse
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
-		point4(5.0f, 3.0f, -5.0f, 1.0f),   // position
+		point4(7.0f, 3.0f, -7.0f, 1.0f),   // position
 		point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
-		vec3(10.0f, 0.0f, -10.0f),			  //spotTarget
+		vec3(7.0f, 0.0f, -7.0f),			  //spotTarget
 		vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
 		1.0f	,	// spotExponent(parameter e); cos^(e)(phi) 
 		45.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
@@ -121,7 +123,7 @@ LightSource g_Light[LIGHTCOUNT] = {
 	{
 		1,
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
-		color4(0, 0, 1, 1.0f), // diffuse
+		color4(0, 0, 0, 1.0f), // diffuse
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
 		point4(-5.0f, 3.0f, 5.0f, 1.0f),   // position
 		point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
@@ -193,8 +195,9 @@ void init( void )
 
 
 	g_pCat->SetProjectionMatrix(mpx);
-	//_pTeaPot->SetProjectionMatrix(mpx);
-	g_pSphere->SetProjectionMatrix(mpx);
+	g_pDeer->SetProjectionMatrix(mpx);
+	g_pWolf->SetProjectionMatrix(mpx);
+	g_pRat->SetProjectionMatrix(mpx);
 
 	for (int i = 0; i < LIGHTCOUNT; i++)
 	{
@@ -216,9 +219,10 @@ void GL_Display( void )
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the window
 
-	g_pSphere->Draw();
 	g_pCat->Draw();
-	//_pTeaPot->Draw();
+	g_pDeer->Draw();
+	g_pWolf->Draw();
+	g_pRat->Draw();
 
 	g_BottomWall->Draw();
 	g_LeftWall->Draw();
@@ -227,7 +231,7 @@ void GL_Display( void )
 	g_BackWall->Draw();
 	g_TopWall->Draw();
 
-	for (int i = 0; i < LIGHTCOUNT; i++)
+	for (int i = 1; i < 1; i++)
 	{
 		g_pLight[i]->Draw();
 		g_LightLine[i]->Draw();
@@ -267,8 +271,10 @@ void onFrameMove(float delta)
 	mvx = camera->getViewMatrix(bVDirty);
 	if (bVDirty) {
 		g_pCat->SetViewMatrix(mvx);
-		//_pTeaPot->SetViewMatrix(mvx);
-		g_pSphere->SetViewMatrix(mvx);
+		g_pDeer->SetViewMatrix(mvx);
+		g_pWolf->SetViewMatrix(mvx);
+		g_pRat->SetViewMatrix(mvx);
+
 		g_BottomWall->SetViewMatrix(mvx);
 		g_TopWall->SetViewMatrix(mvx);
 		g_LeftWall->SetViewMatrix(mvx);
@@ -298,8 +304,10 @@ void onFrameMove(float delta)
 
 	// 如果需要重新計算時，在這邊計算每一個物件的顏色
 	g_pCat->Update(g_Light, delta);
-	//_pTeaPot->Update(g_Light, delta);
-	g_pSphere->Update(g_Light, delta);
+	g_pDeer->Update(g_Light, delta);
+	g_pWolf->Update(g_Light, delta);
+	g_pRat->Update(g_Light, delta);
+
 	g_BottomWall->Update(g_Light, delta);
 	g_TopWall->Update(g_Light, delta);
 	g_LeftWall->Update(g_Light, delta);
@@ -367,8 +375,10 @@ void Win_Keyboard( unsigned char key, int x, int y )
     case 033:
 		glutIdleFunc( NULL );
 		delete g_pCat;
-		//delete _pTeaPot;
-		delete g_pSphere;
+		delete g_pDeer;
+		delete g_pWolf;
+		delete g_pRat;
+
 		//delete g_pCheckerBottom;
 		for (int i = 0; i < LIGHTCOUNT; i++)
 		{
@@ -588,20 +598,37 @@ void RoomObjGenerator() {
 	g_pCat ->SetMaterials(vec4(0), vec4(0.75f, 0.75f, 0.75f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	g_pCat->SetKaKdKsShini(0.15f, 0.8f, 0.2f, 2);
 
-	//_pTeaPot = new ModelPool("Model/TeaPot.obj", Type_3DMax);
-	//_pTeaPot->SetTRSMatrix(Translate(vec4(0, 5.3f, 0, 1))*Scale(2.0f, 2.0f, 2.0f));
-	//_pTeaPot->SetMaterials(vec4(0), vec4(0.75f, 0.75f, 0.75f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	//_pTeaPot->SetKaKdKsShini(0.15f, 0.8f, 0.2f, 2);
 
-	g_pSphere = new CSolidSphere(1, 16, 16);
-	// Part 3 : materials
-//#ifdef SETTING_MATERIALS
-//	g_pSphere->SetMaterials(vec4(0.15f, 0.15f, 0.15f, 1.0f), vec4(0, 0, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
-//	g_pSphere->SetKaKdKsShini(0.15f, 0.45f, 0.55f, 5);
-//#endif
-	g_pSphere->SetShader();
-	vT.x = -1.5; vT.y = 1.0; vT.z = 1.5;
+	vT.x = -6.0; vT.y = 0.5; vT.z = -6.0;
 	mxT = Translate(vT);
-	g_pSphere->SetTRSMatrix(mxT);
-	g_pSphere->SetShadingMode(GOURAUD_SHADING);
+	g_pDeer = new ModelPool("Model/deer.obj", Type_3DMax);
+	g_pDeer->SetTRSMatrix(mxT*RotateY(-45.0f)*Scale(0.004f, 0.004f, 0.004f));
+	g_pDeer->SetMaterials(vec4(0), vec4(0.75f, 0.75f, 0.75f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	g_pDeer->SetKaKdKsShini(0.15f, 0.8f, 0.2f, 2);
+
+	vT.x = -6.0; vT.y = 0.5; vT.z = 6.0;
+	mxT = Translate(vT);
+	g_pWolf = new ModelPool("Model/wolf.obj", Type_3DMax);
+	g_pWolf->SetTRSMatrix(mxT*RotateY(45.0f)*Scale(0.007f, 0.007f, 0.007f));
+	g_pWolf->SetMaterials(vec4(0), vec4(0.75f, 0.75f, 0.75f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	g_pWolf->SetKaKdKsShini(0.15f, 0.8f, 0.2f, 2);
+
+	vT.x = 0.0; vT.y = 0.5; vT.z = -0.0;
+	mxT = Translate(vT);
+	g_pRat = new ModelPool("Model/rat.obj", Type_3DMax);
+	g_pRat->SetTRSMatrix(mxT*RotateY(45.0f)*Scale(0.015f, 0.015f, 0.015f));
+	g_pRat->SetMaterials(vec4(0), vec4(0.75f, 0.75f, 0.75f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	g_pRat->SetKaKdKsShini(0.15f, 0.8f, 0.2f, 2);
+
+//	g_pSphere = new CSolidSphere(1, 16, 16);
+//	// Part 3 : materials
+////#ifdef SETTING_MATERIALS
+////	g_pSphere->SetMaterials(vec4(0.15f, 0.15f, 0.15f, 1.0f), vec4(0, 0, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+////	g_pSphere->SetKaKdKsShini(0.15f, 0.45f, 0.55f, 5);
+////#endif
+//	g_pSphere->SetShader();
+//	vT.x = -1.5; vT.y = 1.0; vT.z = 1.5;
+//	mxT = Translate(vT);
+//	g_pSphere->SetTRSMatrix(mxT);
+//	g_pSphere->SetShadingMode(GOURAUD_SHADING);
 }

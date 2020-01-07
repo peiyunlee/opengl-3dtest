@@ -479,7 +479,6 @@ vec4 CShape::PhongReflectionModel(vec4 vPoint, vec3 vNormal, const LightSource &
 	// 也就是設定所有的頂點都是這個顏色
 	return vColor;
 }
-
 #else
 
 vec4 CShape::PhongReflectionModel(vec4 vPoint, vec3 vNormal, const LightSource &Lights)
