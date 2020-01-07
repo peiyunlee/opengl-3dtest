@@ -13,7 +13,7 @@ typedef Angel::vec4  point4;
 
 //#define LIGHTING_WITHCPU
 #define LIGHTING_WITHGPU
-#define PERVERTEX_LIGHTING
+//#define PERVERTEX_LIGHTING
 
 // 當模型有執行 non-uniform scale 的操作時，必須透過計算反矩陣來得到正確的 Normal 方向
 // 開啟以下的定義即可，目前 CPU 計算的有提供
@@ -23,7 +23,7 @@ typedef Angel::vec4  point4;
 
 #define SPOT_LIGHT 1
 
-#define LIGHTCOUNT 2
+#define LIGHTCOUNT 4
 
 
 class CShape 

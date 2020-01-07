@@ -157,6 +157,68 @@ void CShape::SetAPI() {
 
 	m_uiLighting[1] = glGetUniformLocation(m_uiProgram, "iLighting[1]");
 	glUniform1i(m_uiLighting[1], m_iLighting[1]);
+
+	/////Light2
+	m_uiLightInView[2] = glGetUniformLocation(m_uiProgram, "LightInView[2]");
+	glUniform4fv(m_uiLightInView[2], 1, m_vLightInView[2]);
+
+	m_uiDiffuseProduct[2] = glGetUniformLocation(m_uiProgram, "DiffuseProduct[2]");
+	glUniform4fv(m_uiDiffuseProduct[2], 1, m_DiffuseProduct[2]);
+
+	m_uiDiffuse[2] = glGetUniformLocation(m_uiProgram, "Diffuse[2]");
+	glUniform4fv(m_uiDiffuse[2], 1, m_Diffuse[2]);
+
+	m_uiSpecular[2] = glGetUniformLocation(m_uiProgram, "SpecularProduct[2]");
+	glUniform4fv(m_uiSpecular[2], 1, m_SpecularProduct[2]);
+
+	m_uiSpotCosCutoff[2] = glGetUniformLocation(m_uiProgram, "spotCosCutoff[2]");
+	glUniform1f(m_uiSpotCosCutoff[2], m_spotCosCutoff[2]);
+
+	m_uiAmbient[2] = glGetUniformLocation(m_uiProgram, "AmbientProduct[2]");
+	glUniform4fv(m_uiAmbient[2], 1, m_AmbientProduct[2]);
+
+	m_uiLightType[2] = glGetUniformLocation(m_uiProgram, "lightType[2]");
+	glUniform1i(m_uiLightType[2], lightType[2]);
+
+	m_uiLightDir[2] = glGetUniformLocation(m_uiProgram, "LightDir[2]");
+	glUniform4fv(m_uiLightDir[2], 1, m_LightDir[2]);
+
+	m_uiSpotExponent[2] = glGetUniformLocation(m_uiProgram, "spotExponent[2]");
+	glUniform1f(m_uiSpotExponent[2], m_SpotExponent[2]);
+
+	m_uiLighting[2] = glGetUniformLocation(m_uiProgram, "iLighting[2]");
+	glUniform1i(m_uiLighting[2], m_iLighting[2]);
+
+	/////Light3
+	m_uiLightInView[3] = glGetUniformLocation(m_uiProgram, "LightInView[3]");
+	glUniform4fv(m_uiLightInView[3], 1, m_vLightInView[3]);
+
+	m_uiDiffuseProduct[3] = glGetUniformLocation(m_uiProgram, "DiffuseProduct[3]");
+	glUniform4fv(m_uiDiffuseProduct[3], 1, m_DiffuseProduct[3]);
+
+	m_uiDiffuse[3] = glGetUniformLocation(m_uiProgram, "Diffuse[3]");
+	glUniform4fv(m_uiDiffuse[3], 1, m_Diffuse[3]);
+
+	m_uiSpecular[3] = glGetUniformLocation(m_uiProgram, "SpecularProduct[3]");
+	glUniform4fv(m_uiSpecular[3], 1, m_SpecularProduct[3]);
+
+	m_uiSpotCosCutoff[3] = glGetUniformLocation(m_uiProgram, "spotCosCutoff[3]");
+	glUniform1f(m_uiSpotCosCutoff[3], m_spotCosCutoff[3]);
+
+	m_uiAmbient[3] = glGetUniformLocation(m_uiProgram, "AmbientProduct[3]");
+	glUniform4fv(m_uiAmbient[3], 1, m_AmbientProduct[3]);
+
+	m_uiLightType[3] = glGetUniformLocation(m_uiProgram, "lightType[3]");
+	glUniform1i(m_uiLightType[3], lightType[3]);
+
+	m_uiLightDir[3] = glGetUniformLocation(m_uiProgram, "LightDir[3]");
+	glUniform4fv(m_uiLightDir[3], 1, m_LightDir[3]);
+
+	m_uiSpotExponent[3] = glGetUniformLocation(m_uiProgram, "spotExponent[3]");
+	glUniform1f(m_uiSpotExponent[3], m_SpotExponent[3]);
+
+	m_uiLighting[3] = glGetUniformLocation(m_uiProgram, "iLighting[3]");
+	glUniform1i(m_uiLighting[3], m_iLighting[3]);
 }
 
 void CShape::DrawingSetShader()

@@ -14,6 +14,7 @@
 #include "Common/CWireCube.h"
 #include "Common/CChecker.h"
 #include "Common/CCamera.h"
+#include "Common\CLineSegment.h"
 #include "png_loader.h"
 
 
@@ -53,9 +54,9 @@ float g_fElapsedTime = 0;
 float g_fLightRadius = 6;
 float g_fLightTheta = 0;
 
-float g_fLightR = 0.95f;
-float g_fLightG = 0.95f;
-float g_fLightB = 0.95f;
+float g_fLightR = 1.0f;
+float g_fLightG = 1.0f;
+float g_fLightB = 1.0f;
 
 point4  g_vEye(g_fRadius*sin(g_fTheta)*cos(g_fPhi), g_fRadius*sin(g_fTheta)*sin(g_fPhi), g_fRadius*cos(g_fTheta), 1.0);
 point4  g_vAt(0.0, 0.0, 0.0, 1.0);
@@ -82,23 +83,58 @@ LightSource g_Light[LIGHTCOUNT] = {
 	{
 		1,
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
-		color4(g_fLightR, 0, 0, 1.0f), // diffuse
+		color4(1, 0, 0, 1.0f), // diffuse
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
-		point4(4.0f, 4.0f, 0.0f, 1.0f),   // position
+		point4(-5.0f, 3.0f, -5.0f, 1.0f),   // position
 		point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
-		vec3(0.0f, 0.0f, 0.0f),  // spotTarget
-		vec3(0.0f, 0.0f, 0.0f),  // spotDirection
-		1.0f,		// spotExponent(parameter e); cos^(e)(phi) 
-		45.0f,	// spotCutoff;// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
-		0.707f,	// spotCosCutoff = cos(spotCutoff) ; spot 的照明範圍取 cos
-		1,	// constantAttenuation(a + b*d + c*d^2)^-1 中的 a, 
-		0,	// linearAttenuation    (a + bd + cd^2)^-1 中的 b
-		0,	// quadraticAttenuation (a + bd + cd^2)^-1 中的 c
+		vec3(-10.0f, 0.0f, -10.0f),			  //spotTarget
+		vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
+		1.0f	,	// spotExponent(parameter e); cos^(e)(phi) 
+		45.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
+		0.707f	,	// spotCosCutoff; // (range: [1.0,0.0],-1.0), 照明方向與被照明點之間的角度取 cos 後, cut off 的值
+		1	,	// constantAttenuation	(a + bd + cd^2)^-1 中的 a, d 為光源到被照明點的距離
+		0	,	// linearAttenuation	    (a + bd + cd^2)^-1 中的 b
+		0	,	// quadraticAttenuation (a + bd + cd^2)^-1 中的 c
+		1
+	},
+	{
+		1,
+		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
+		color4(0, 1, 0, 1.0f), // diffuse
+		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
+		point4(5.0f, 3.0f, -5.0f, 1.0f),   // position
+		point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
+		vec3(10.0f, 0.0f, -10.0f),			  //spotTarget
+		vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
+		1.0f	,	// spotExponent(parameter e); cos^(e)(phi) 
+		45.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
+		0.707f	,	// spotCosCutoff; // (range: [1.0,0.0],-1.0), 照明方向與被照明點之間的角度取 cos 後, cut off 的值
+		1	,	// constantAttenuation	(a + bd + cd^2)^-1 中的 a, d 為光源到被照明點的距離
+		0	,	// linearAttenuation	    (a + bd + cd^2)^-1 中的 b
+		0	,	// quadraticAttenuation (a + bd + cd^2)^-1 中的 c
+		1
+	},
+	{
+		1,
+		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
+		color4(0, 0, 1, 1.0f), // diffuse
+		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
+		point4(0.0f, 3.0f, 5.0f, 1.0f),   // position
+		point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
+		vec3(0.0f, 0.0f, 10.0f),			  //spotTarget
+		vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
+		1.0f	,	// spotExponent(parameter e); cos^(e)(phi) 
+		45.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
+		0.707f	,	// spotCosCutoff; // (range: [1.0,0.0],-1.0), 照明方向與被照明點之間的角度取 cos 後, cut off 的值
+		1	,	// constantAttenuation	(a + bd + cd^2)^-1 中的 a, d 為光源到被照明點的距離
+		0	,	// linearAttenuation	    (a + bd + cd^2)^-1 中的 b
+		0	,	// quadraticAttenuation (a + bd + cd^2)^-1 中的 c
 		1
 	},
 };
 
 CWireSphere *g_pLight[LIGHTCOUNT];
+CLineSegment *g_LightLine[LIGHTCOUNT];
 //----------------------------------------------------------------------------
 
 
@@ -141,6 +177,8 @@ void init( void )
 	for (int i = 0; i < LIGHTCOUNT; i++)
 	{
 		g_Light[i].UpdateDirection();
+		g_LightLine[i] = new CLineSegment(g_Light[i].position, g_Light[i].spotTarget, vec4(1, 0, 0, 1));
+		g_LightLine[i]->SetShader();
 	}
 
 
@@ -155,6 +193,7 @@ void init( void )
 	for (int i = 0; i < LIGHTCOUNT; i++)
 	{
 		g_pLight[i]->SetProjectionMatrix(mpx);
+		g_LightLine[i]->SetProjectionMatrix(mpx);
 	}
 
 	g_BottomWall->SetProjectionMatrix(mpx);
@@ -184,6 +223,7 @@ void GL_Display( void )
 	for (int i = 0; i < LIGHTCOUNT; i++)
 	{
 		g_pLight[i]->Draw();
+		g_LightLine[i]->Draw();
 	}
 
 	glutSwapBuffers();	// 交換 Frame Buffer
@@ -206,6 +246,7 @@ void UpdateLightPosition(float dt)
 	g_Light[0].position.z = g_fLightRadius * sinf(g_fLightTheta);
 	mxT = Translate(g_Light[0].position);
 	g_pLight[0]->SetTRSMatrix(mxT);
+	g_LightLine[0]->UpdatePosition(g_Light[0].position, g_Light[0].spotTarget);
 
 }
 //----------------------------------------------------------------------------
@@ -229,6 +270,7 @@ void onFrameMove(float delta)
 		for (int i = 0; i < LIGHTCOUNT; i++)
 		{
 			g_pLight[i]->SetViewMatrix(mvx);
+			g_LightLine[i]->SetViewMatrix(mvx);
 
 		}
 
@@ -243,6 +285,7 @@ void onFrameMove(float delta)
 	for (int i = 0; i < LIGHTCOUNT; i++)
 	{
 		g_pLight[i]->Update(delta);
+		g_LightLine[i]->UpdatePosition(g_Light[i].position, g_Light[i].spotTarget);
 	}
 
 	// 如果需要重新計算時，在這邊計算每一個物件的顏色
@@ -320,6 +363,7 @@ void Win_Keyboard( unsigned char key, int x, int y )
 		for (int i = 0; i < LIGHTCOUNT; i++)
 		{
 			delete g_pLight[i];
+			delete g_LightLine[i];
 		}
 		delete g_LeftWall;
 		delete g_RightWall;
