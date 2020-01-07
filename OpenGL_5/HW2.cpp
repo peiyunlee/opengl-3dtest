@@ -119,9 +119,9 @@ LightSource g_Light[LIGHTCOUNT] = {
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
 		color4(0, 0, 1, 1.0f), // diffuse
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
-		point4(0.0f, 3.0f, 5.0f, 1.0f),   // position
+		point4(-5.0f, 3.0f, 5.0f, 1.0f),   // position
 		point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
-		vec3(0.0f, 0.0f, 10.0f),			  //spotTarget
+		vec3(-10.0f, 0.0f, 10.0f),			  //spotTarget
 		vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
 		1.0f	,	// spotExponent(parameter e); cos^(e)(phi) 
 		45.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot ªº·Ó©ú½d³ò
