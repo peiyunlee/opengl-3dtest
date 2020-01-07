@@ -51,8 +51,10 @@ void CShape::CreateBufferObject()
 	glBufferSubData(GL_ARRAY_BUFFER, sizeof(vec4)*m_iNumVtx + sizeof(vec3)*m_iNumVtx, sizeof(vec4)*m_iNumVtx, m_pColors); // vertcies' Color
 }
 
+
 void CShape::SetShader(GLuint uiShaderHandle)
 {
+
 	// 改放置這裡, 方便每一個物件的設定
 	CreateBufferObject();
 
@@ -560,3 +562,67 @@ vec4 CShape::PhongReflectionModel(vec4 vPoint, vec3 vNormal, const LightSource &
 }
 
 #endif
+
+
+void CShape::SetShader_2DUI(GLuint uiShaderHandle) {
+
+	CreateBufferObject_2DUI();
+	// Load shaders and use the resulting shader program
+	if (uiShaderHandle == MAX_UNSIGNED_INT) m_uiProgram = InitShader(m_pVXshader, m_pFSshader);
+	else m_uiProgram = uiShaderHandle;
+
+	// set up vertex arrays
+	GLuint vPosition = glGetAttribLocation(m_uiProgram, "vPosition");
+	glEnableVertexAttribArray(vPosition);
+	glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+
+	GLuint vNormal = glGetAttribLocation(m_uiProgram, "vNormal");
+	glEnableVertexAttribArray(vNormal);
+	glVertexAttribPointer(vNormal, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(sizeof(vec4)*m_iNumVtx));
+
+	m_uiModelView = glGetUniformLocation(m_uiProgram, "ModelView");
+	//	m_mxMVFinal , m_mxView 宣告時就是單位矩陣
+	glUniformMatrix4fv(m_uiModelView, 1, GL_TRUE, m_mxView);
+
+	m_uiProjection = glGetUniformLocation(m_uiProgram, "Projection");
+	// m_mxProjection 宣告時就是單位矩陣
+	glUniformMatrix4fv(m_uiProjection, 1, GL_TRUE, m_mxProjection);
+
+	m_uiColor = glGetUniformLocation(m_uiProgram, "vColor");
+	glUniform4fv(m_uiColor, 1, m_fColor);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+
+void CShape::CreateBufferObject_2DUI() {
+	//For UI
+	glGenVertexArrays(1, &m_uiVao);
+	glBindVertexArray(m_uiVao);
+
+	// Create and initialize a buffer object
+	glGenBuffers(1, &m_uiBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_uiBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vec4)*m_iNumVtx + sizeof(vec3)*m_iNumVtx, NULL, GL_STATIC_DRAW);
+
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vec4)*m_iNumVtx, m_pPoints);
+	glBufferSubData(GL_ARRAY_BUFFER, sizeof(vec4)*m_iNumVtx, sizeof(vec3)*m_iNumVtx, m_pNormals);
+}
+
+
+void CShape::DrawingSetShader_2DUI() {
+	glUseProgram(m_uiProgram);
+	glBindVertexArray(m_uiVao);
+
+	if (m_bViewUpdated || m_bTRSUpdated) { // Model View 的相關矩陣內容有更動
+		m_mxMVFinal = m_mxView * m_mxTRS;
+		m_bViewUpdated = m_bTRSUpdated = false;
+	}
+	glUniformMatrix4fv(m_uiModelView, 1, GL_TRUE, m_mxMVFinal);
+
+	if (m_bProjUpdated) {
+		glUniformMatrix4fv(m_uiProjection, 1, GL_TRUE, m_mxProjection);
+		m_bProjUpdated = false;
+	}
+	glUniform4fv(m_uiColor, 1, m_fColor);
+}

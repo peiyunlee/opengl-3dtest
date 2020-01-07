@@ -80,6 +80,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Common\C2DSprite.cpp" />
     <ClCompile Include="Common\CCamera.cpp" />
     <ClCompile Include="Common\CChecker.cpp" />
     <ClCompile Include="Common\CLineSegment.cpp" />
@@ -98,6 +99,7 @@
     <ClCompile Include="png_loader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Common\C2DSprite.h" />
     <ClInclude Include="Common\CCamera.h" />
     <ClInclude Include="Common\CChecker.h" />
     <ClInclude Include="Common\CLineSegment.h" />
@@ -121,10 +123,12 @@
     <None Include="fsNormalMapLighting.glsl" />
     <None Include="fsPerPixelLighting.glsl" />
     <None Include="fsPerVtxLighting.glsl" />
+    <None Include="fsVtxNormal.glsl" />
     <None Include="vsCubeMapping.glsl" />
     <None Include="vsNormalMapLighting.glsl" />
     <None Include="vsPerPixelLighting.glsl" />
     <None Include="vsPerVtxLighting.glsl" />
+    <None Include="vsVtxNormal.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="SOIL\Release\SOIL.lib" />

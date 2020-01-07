@@ -17,6 +17,7 @@
 #include "Common/CLineSegment.h"
 #include "png_loader.h"
 #include "Common/ModelPool.h"
+#include "Common/C2DSprite.h"
 
 
 #define SPACE_KEY 32
@@ -27,6 +28,11 @@
 #define GRID_SIZE 20 // must be an even number
 
 #define SETTING_MATERIALS 
+
+#define RED_BUTTON   0
+#define GREEN_BUTTON 1
+#define BLUE_BUTTON  2
+#define WHITE_BUTTON 3
 
 // For Model View and Projection Matrix
 mat4 g_mxModelView(1.0f);
@@ -52,6 +58,16 @@ ModelPool *g_pCat;
 ModelPool *g_pDeer;
 ModelPool *g_pRat;
 ModelPool *g_pWolf;
+
+// 2D 介面所需要的相關變數
+C2DSprite *g_p2DBtn[4];
+mat4  g_2DView = mat4(1, 0, 0, 0
+	, 0, 1, 0, 0
+	, 0, 0, 1, 0
+	, 0, 0, -1, 1);;
+mat4  g_2DProj;
+
+bool lighting[LIGHTCOUNT] = { true };
 
 //----------------------------------------------------------------------------
 // Part 2 : for single light source
@@ -89,7 +105,7 @@ LightSource g_Light[LIGHTCOUNT] = {
 	{
 		1,
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
-		color4(0, 0, 1.0, 1.0f), // diffuse
+		color4(1, 0, 0.0, 1.0f), // diffuse
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
 		point4(-5.0f, 8.0f, -5.0f, 1.0f),   // position
 		point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
@@ -148,6 +164,8 @@ CLineSegment *g_LightLine[LIGHTCOUNT];
 // 函式的原型宣告
 extern void IdleProcess();
 void RoomObjGenerator();
+void UIGenerator();
+void UIAction(vec2 pt);
 
 void init( void )
 {
@@ -165,6 +183,7 @@ void init( void )
 	camera->updatePerspective(60.0, (GLfloat)SCREEN_SIZE / (GLfloat)SCREEN_SIZE, 1.0, 1000.0);
 
 	RoomObjGenerator();
+	UIGenerator();
 
 	
 
@@ -236,6 +255,8 @@ void GL_Display( void )
 		g_pLight[i]->Draw();
 		g_LightLine[i]->Draw();
 	}
+
+	for (int i = 0; i <4; i++) g_p2DBtn[i]->Draw();
 
 	glutSwapBuffers();	// 交換 Frame Buffer
 }
@@ -339,7 +360,7 @@ void Win_Keyboard( unsigned char key, int x, int y )
 // Part 2 : for single light source
 	case 65: // A key
 	case 97: // a key
-		g_bAutoRotating = !g_bAutoRotating;
+		//g_bAutoRotating = !g_bAutoRotating;
 		break;
 	case 82: // R key
 		if( g_fLightR <= 0.95f ) g_fLightR += 0.05f;
@@ -398,10 +419,20 @@ void Win_Keyboard( unsigned char key, int x, int y )
 }
 
 //----------------------------------------------------------------------------
+inline void ScreenToUICoordinate(int x, int y, vec2 &pt)
+{
+	pt.x = 2.0f*(float)x / SCREEN_SIZE - 1.0f;
+	pt.y = 2.0f*(float)(SCREEN_SIZE - y) / SCREEN_SIZE - 1.0f;
+}
+//----------------------------------------------------------------------------
 void Win_Mouse(int button, int state, int x, int y) {
+	vec2 pt;
 	switch(button) {
 		case GLUT_LEFT_BUTTON:   // 目前按下的是滑鼠左鍵
-			//if ( state == GLUT_DOWN ) ; 
+			if (state == GLUT_DOWN) {
+				ScreenToUICoordinate(x, y, pt);
+				UIAction(pt);
+			}
 			break;
 		case GLUT_MIDDLE_BUTTON:  // 目前按下的是滑鼠中鍵 ，換成 Y 軸
 			//if ( state == GLUT_DOWN ) ; 
@@ -631,4 +662,138 @@ void RoomObjGenerator() {
 //	mxT = Translate(vT);
 //	g_pSphere->SetTRSMatrix(mxT);
 //	g_pSphere->SetShadingMode(GOURAUD_SHADING);
+}
+
+
+void UIGenerator() {
+	// 以下為利用平行投影產生 2D 的介面
+	// 範圍在 X/Y 平面的  -1 到 1 之間，介面都放在 Z = 0 
+	mat4 mxT2D, mxS2D;
+	vec4 vColor2D = vec4(0, 0, 0, 1);
+
+	//白色按鈕
+	g_p2DBtn[0] = new C2DSprite; g_p2DBtn[0]->SetShader_2DUI();
+	vColor2D.x = 1; vColor2D.y = 0; vColor2D.z = 0; g_p2DBtn[0]->SetDefaultColor(vColor2D);
+	mxS2D = Scale(0.1f, 0.1f, 1.0f);
+	mxT2D = Translate(0.2f, -0.85f, 0);
+	g_p2DBtn[0]->SetTRSMatrix(mxT2D*mxS2D);
+	g_p2DBtn[0]->SetViewMatrix(g_2DView);
+	g_p2DBtn[0]->SetViewMatrix(g_2DProj);
+
+	//藍色按鈕
+	g_p2DBtn[1] = new C2DSprite; g_p2DBtn[1]->SetShader_2DUI();
+	vColor2D.x = 0; vColor2D.y = 1; vColor2D.z = 0; g_p2DBtn[1]->SetDefaultColor(vColor2D);
+	mxT2D = Translate(0.4f, -0.85f, 0);
+	g_p2DBtn[1]->SetTRSMatrix(mxT2D*mxS2D);
+	g_p2DBtn[1]->SetViewMatrix(g_2DView);
+	g_p2DBtn[1]->SetViewMatrix(g_2DProj);
+
+	//綠色按鈕
+	g_p2DBtn[2] = new C2DSprite; g_p2DBtn[2]->SetShader_2DUI();
+	vColor2D.x = 0; vColor2D.y = 0; vColor2D.z = 1; g_p2DBtn[2]->SetDefaultColor(vColor2D);
+	mxT2D = Translate(0.6f, -0.85f, 0);
+	g_p2DBtn[2]->SetTRSMatrix(mxT2D*mxS2D);
+	g_p2DBtn[2]->SetViewMatrix(g_2DView);
+	g_p2DBtn[2]->SetViewMatrix(g_2DProj);
+
+	//紅色按鈕
+	g_p2DBtn[3] = new C2DSprite; g_p2DBtn[3]->SetShader_2DUI();
+	vColor2D.x = 1; vColor2D.y = 1; vColor2D.z = 1; g_p2DBtn[3]->SetDefaultColor(vColor2D);
+	mxT2D = Translate(0.8f, -0.85f, 0);
+	g_p2DBtn[3]->SetTRSMatrix(mxT2D*mxS2D);
+	g_p2DBtn[3]->SetViewMatrix(g_2DView);
+	g_p2DBtn[3]->SetViewMatrix(g_2DProj);
+}
+
+void UIAction(vec2 pt) {
+	if (g_p2DBtn[RED_BUTTON]->OnTouches(pt)) {
+		if (g_p2DBtn[0]->getButtonStatus()) {
+			printf("紅色關\n");
+			lighting[1] = false;
+			g_Light[1].ambient = color4(0, 0, 0, 0);
+			g_Light[1].diffuse = color4(0, 0, 0, 0);
+			g_Light[1].specular = color4(0, 0, 0, 0);
+		}
+		else {
+			printf("紅色開\n");
+			lighting[1] = true;
+			g_Light[1].diffuse.x = 1;
+			g_Light[1].ambient = color4(g_fLightR, g_fLightG, g_fLightB, 1.0f);
+			g_Light[1].specular = color4(g_fLightR, g_fLightG, g_fLightB, 1.0f);
+		}
+	}
+	//藍色按鈕→控制主燈光的旋轉On/Off
+	if (g_p2DBtn[GREEN_BUTTON]->OnTouches(pt)) {
+		if (g_p2DBtn[2]->getButtonStatus()) {
+			printf("綠色關\n");
+			lighting[2] = false;
+
+			//if (g_p2DBtn[1]->getButtonStatus()) g_bAutoRotating = !g_bAutoRotating;
+			//else g_bAutoRotating = !g_bAutoRotating;
+		}
+		else {
+			printf("綠色開\n");
+			lighting[2] = true;
+		}
+	}
+	//綠色按鈕→控制所有側燈光的照明On/Off
+	if (g_p2DBtn[BLUE_BUTTON]->OnTouches(pt)) {
+		if (g_p2DBtn[2]->getButtonStatus()) {
+			printf("藍色關\n");
+			lighting[3] = false;
+			/*b_Light2 = false;
+			b_Light3 = false;
+			b_Light4 = false;
+
+			g_Light2.diffuse = color4(0, 0, 0, 0);
+			g_Light2.ambient = color4(0, 0, 0, 0);
+			g_Light2.specular = color4(0, 0, 0, 0);
+
+			g_Light3.diffuse = color4(0, 0, 0, 0);
+			g_Light3.ambient = color4(0, 0, 0, 0);
+			g_Light3.specular = color4(0, 0, 0, 0);
+
+			g_Light4.diffuse = color4(0, 0, 0, 0);
+			g_Light4.ambient = color4(0, 0, 0, 0);
+			g_Light4.specular = color4(0, 0, 0, 0);*/
+		}
+		else {
+			printf("藍色開\n");
+			lighting[3] = true;
+			/*b_Light2 = true;
+			b_Light3 = true;
+			b_Light4 = true;
+
+			g_Light2.diffuse.x = g_fLightR2;
+			g_Light2.diffuse.y = g_fLightG2;
+			g_Light2.diffuse.z = g_fLightB2;
+			g_Light2.ambient = color4(0.95f, 0.95f, 0.95f, 1.0f);
+			g_Light2.specular = color4(0.95f, 0.95f, 0.95f, 1.0f);
+
+			g_Light3.diffuse.x = g_fLightR3;
+			g_Light3.diffuse.y = g_fLightG3;
+			g_Light3.diffuse.z = g_fLightB3;
+			g_Light3.ambient = color4(0.95f, 0.95f, 0.95f, 1.0f);
+			g_Light3.specular = color4(0.95f, 0.95f, 0.95f, 1.0f);
+
+			g_Light4.diffuse.x = g_fLightR4;
+			g_Light4.diffuse.y = g_fLightG4;
+			g_Light4.diffuse.z = g_fLightB4;
+			g_Light4.ambient = color4(0.95f, 0.95f, 0.95f, 1.0f);
+			g_Light4.specular = color4(0.95f, 0.95f, 0.95f, 1.0f);*/
+		}
+	}
+	//紅色按鈕→控制所有側燈光聚集於一點
+	if (g_p2DBtn[3]->OnTouches(pt)) {
+		if (g_p2DBtn[3]->getButtonStatus()) {
+			printf("白色官\n");
+			lighting[0] = false;
+			g_bAutoRotating = !g_bAutoRotating;
+		}
+		else {
+			printf("白色開\n");
+			lighting[0] = true;
+			g_bAutoRotating = !g_bAutoRotating;
+		}
+	}
 }

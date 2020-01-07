@@ -125,6 +125,10 @@ public:
 	vec4 PhongReflectionModel(vec4 vPoint, vec3 vNormal, vec4 vLightPos, color4 vLightI);
 	vec4 PhongReflectionModel(vec4 vPoint, vec3 vNormal, const LightSource &Lights);
 
+	void SetShader_2DUI(GLuint uiShaderHandle = MAX_UNSIGNED_INT);
+	void CreateBufferObject_2DUI();
+	void DrawingSetShader_2DUI();
+
 #ifdef LIGHTING_WITHGPU
 	void SetLightingDisable(int num) {m_iLighting[num] = 0;}
 #endif
