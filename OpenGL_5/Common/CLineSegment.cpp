@@ -2,7 +2,27 @@
 // Example 3 開始改成面朝上(Y軸)
 
 
-CLineSegment::CLineSegment(const vec4 SPoint, const vec4 EPoint, const vec4 vColor)
+//CLineSegment::CLineSegment(const vec4 SPoint, const vec4 EPoint, const vec4 vColor)
+//{
+//	// 預設在 X 軸上的 (-1,0,0) 到 (1,0,0) 的線段
+//	m_Points[0] = SPoint; m_Points[1] = EPoint;
+//
+//	// 預設為紅色
+//	m_Colors[0] = m_Colors[1] = vColor;  // (r, g, b, a)
+//
+//	// Create and initialize a buffer object 
+//	CreateBufferObject();
+//
+//	m_bUpdateView = false;
+//	m_bUpdateProj = false;
+//}
+
+CLineSegment::CLineSegment()
+{
+
+}
+
+void CLineSegment::SetDefault(const vec4 SPoint, const vec4 EPoint, const vec4 vColor)
 {
 	// 預設在 X 軸上的 (-1,0,0) 到 (1,0,0) 的線段
 	m_Points[0] = SPoint; m_Points[1] = EPoint;
@@ -10,7 +30,7 @@ CLineSegment::CLineSegment(const vec4 SPoint, const vec4 EPoint, const vec4 vCol
 	// 預設為紅色
 	m_Colors[0] = m_Colors[1] = vColor;  // (r, g, b, a)
 
-	// Create and initialize a buffer object 
+										 // Create and initialize a buffer object 
 	CreateBufferObject();
 
 	m_bUpdateView = false;

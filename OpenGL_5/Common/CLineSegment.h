@@ -29,8 +29,10 @@ private:
 	void CreateBufferObject();
 
 public:
-	CLineSegment(const vec4 SPoint = vec4(-1,0,0,0), const vec4 EPoint = vec4(1,0,0,0), const vec4 vColor = vec4(1,0,0,0) );
+	//CLineSegment(const vec4 SPoint = vec4(-1,0,0,0), const vec4 EPoint = vec4(1,0,0,0), const vec4 vColor = vec4(1,0,0,0) );
+	CLineSegment();
 
+	void SetDefault(const vec4 SPoint = vec4(-1, 0, 0, 0), const vec4 EPoint = vec4(1, 0, 0, 0), const vec4 vColor = vec4(1, 0, 0, 0));
 	void SetShader(mat4 &mxModelView, mat4 &mxProjection, GLuint uiShaderHandle=MAX_UNSIGNED_INT);
 	void SetShader(GLuint uiShaderHandle = MAX_UNSIGNED_INT);
 	GLuint GetShaderHandle() { return m_uiProgram;}

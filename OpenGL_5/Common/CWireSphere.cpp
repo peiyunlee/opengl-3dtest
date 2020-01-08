@@ -1,49 +1,152 @@
 #include "CWireSphere.h"
 
-CWireSphere::CWireSphere(const GLfloat fRadius, const int iSlices, const  int iStacks)
+//CWireSphere::CWireSphere(const GLfloat fRadius, const int iSlices, const  int iStacks)
+//{
+//    GLfloat drho = (GLfloat)(3.141592653589) / (GLfloat) iStacks;  
+//    GLfloat dtheta = 2.0f * (GLfloat)(3.141592653589) / (GLfloat) iSlices;  
+//    GLfloat ds = 1.0f / (GLfloat) iSlices;  
+//    GLfloat dt = 1.0f / (GLfloat) iStacks;  
+//    GLfloat t = 1.0f;      
+//    GLfloat s = 0.0f;  
+//    GLint i, j;     // Looping variables  
+//	int idx = 0; // 儲存 vertex 順序的索引值
+//
+//	m_fRadius = fRadius;
+//	m_iSlices = iSlices;
+//	m_iStacks = iStacks;
+//	m_iNumVtx = iStacks*(2*(iSlices+1));
+//
+//	m_pPoints = NULL; m_pNormals = NULL; m_pTex = NULL;
+//
+//	m_pPoints  = new vec4[m_iNumVtx];
+//	m_pNormals = new vec3[m_iNumVtx];
+//	m_pColors  = new vec4[m_iNumVtx]; 
+//	m_pTex     = new vec2[m_iNumVtx];
+//
+//
+//	for (i = 0; i < iStacks; i++ ) {  
+//		GLfloat rho = (GLfloat)i * drho;  
+//		GLfloat srho = (GLfloat)(sin(rho));  
+//		GLfloat crho = (GLfloat)(cos(rho));  
+//		GLfloat srhodrho = (GLfloat)(sin(rho + drho));  
+//		GLfloat crhodrho = (GLfloat)(cos(rho + drho));  
+//		
+//		// Many sources of OpenGL sphere drawing code uses a triangle fan  
+//		// for the caps of the sphere. This however introduces texturing   
+//		// artifacts at the poles on some OpenGL implementations  
+//		s = 0.0f;  
+//		for ( j = 0; j <= iSlices; j++) {  
+//            GLfloat theta = (j == iSlices) ? 0.0f : j * dtheta;  
+//            GLfloat stheta = (GLfloat)(-sin(theta));  
+//            GLfloat ctheta = (GLfloat)(cos(theta));  
+//  
+//            GLfloat x = stheta * srho;  
+//            GLfloat y = ctheta * srho;  
+//            GLfloat z = crho;  
+//              
+//			m_pPoints[idx].x = x * m_fRadius;
+//			m_pPoints[idx].y = y * m_fRadius;
+//			m_pPoints[idx].z = z * m_fRadius;
+//			m_pPoints[idx].w = 1;
+//
+//			m_pNormals[idx].x = x;
+//			m_pNormals[idx].y = y;
+//			m_pNormals[idx].z = z;
+//
+//			m_pTex[idx].x = s;
+//			m_pTex[idx].y = t; // 設定貼圖座標
+//			idx++;
+//
+//            x = stheta * srhodrho;  
+//            y = ctheta * srhodrho;  
+//            z = crhodrho;
+//
+//			m_pPoints[idx].x = x * m_fRadius;
+//			m_pPoints[idx].y = y * m_fRadius;
+//			m_pPoints[idx].z = z * m_fRadius;
+//			m_pPoints[idx].w = 1;
+//
+//			m_pNormals[idx].x = x;
+//			m_pNormals[idx].y = y;
+//			m_pNormals[idx].z = z;
+//
+//			m_pTex[idx].x = s;
+//			m_pTex[idx].y = t - dt; // 設定貼圖座標
+//			idx++;
+//			s += ds; 
+//		}   
+//		t -= dt;  
+//	}  
+//	// 預設將所有的面都設定成灰色
+//	for( int i = 0 ; i < m_iNumVtx ; i++ ) m_pColors[i] = vec4(-1.0f,-1.0f,-1.0f,1.0f);
+//
+//#ifdef LIGHTING_WITHCPU
+//	// Default Set shader's name
+//	SetShaderName("vsLighting_CPU.glsl", "fsLighting_CPU.glsl");
+//#else // lighting with GPU
+//#ifdef PERVERTEX_LIGHTING
+//	SetShaderName("vsLighting_GPU.glsl", "fsLighting_GPU.glsl");
+//#else
+//	SetShaderName("vsPerPixelLighting.glsl", "fsPerPixelLighting.glsl");
+//#endif
+//#endif  
+//
+//	// Create and initialize a buffer object ，將此部分的設定移入 SetShader 中
+//	// CreateBufferObject();
+//
+//	// 設定材質
+//	SetMaterials(vec4(0), vec4(0.5f, 0.5f, 0.5f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+//	SetKaKdKsShini(0, 0.8f, 0.2f, 1);
+//}
+
+CWireSphere::CWireSphere()
 {
-    GLfloat drho = (GLfloat)(3.141592653589) / (GLfloat) iStacks;  
-    GLfloat dtheta = 2.0f * (GLfloat)(3.141592653589) / (GLfloat) iSlices;  
-    GLfloat ds = 1.0f / (GLfloat) iSlices;  
-    GLfloat dt = 1.0f / (GLfloat) iStacks;  
-    GLfloat t = 1.0f;      
-    GLfloat s = 0.0f;  
-    GLint i, j;     // Looping variables  
+	
+}
+
+void CWireSphere::SetDefault(const GLfloat fRadius, const int iSlices, const  int iStacks) {
+	GLfloat drho = (GLfloat)(3.141592653589) / (GLfloat)iStacks;
+	GLfloat dtheta = 2.0f * (GLfloat)(3.141592653589) / (GLfloat)iSlices;
+	GLfloat ds = 1.0f / (GLfloat)iSlices;
+	GLfloat dt = 1.0f / (GLfloat)iStacks;
+	GLfloat t = 1.0f;
+	GLfloat s = 0.0f;
+	GLint i, j;     // Looping variables  
 	int idx = 0; // 儲存 vertex 順序的索引值
 
 	m_fRadius = fRadius;
 	m_iSlices = iSlices;
 	m_iStacks = iStacks;
-	m_iNumVtx = iStacks*(2*(iSlices+1));
+	m_iNumVtx = iStacks*(2 * (iSlices + 1));
 
 	m_pPoints = NULL; m_pNormals = NULL; m_pTex = NULL;
 
-	m_pPoints  = new vec4[m_iNumVtx];
+	m_pPoints = new vec4[m_iNumVtx];
 	m_pNormals = new vec3[m_iNumVtx];
-	m_pColors  = new vec4[m_iNumVtx]; 
-	m_pTex     = new vec2[m_iNumVtx];
+	m_pColors = new vec4[m_iNumVtx];
+	m_pTex = new vec2[m_iNumVtx];
 
 
-	for (i = 0; i < iStacks; i++ ) {  
-		GLfloat rho = (GLfloat)i * drho;  
-		GLfloat srho = (GLfloat)(sin(rho));  
-		GLfloat crho = (GLfloat)(cos(rho));  
-		GLfloat srhodrho = (GLfloat)(sin(rho + drho));  
-		GLfloat crhodrho = (GLfloat)(cos(rho + drho));  
-		
+	for (i = 0; i < iStacks; i++) {
+		GLfloat rho = (GLfloat)i * drho;
+		GLfloat srho = (GLfloat)(sin(rho));
+		GLfloat crho = (GLfloat)(cos(rho));
+		GLfloat srhodrho = (GLfloat)(sin(rho + drho));
+		GLfloat crhodrho = (GLfloat)(cos(rho + drho));
+
 		// Many sources of OpenGL sphere drawing code uses a triangle fan  
 		// for the caps of the sphere. This however introduces texturing   
 		// artifacts at the poles on some OpenGL implementations  
-		s = 0.0f;  
-		for ( j = 0; j <= iSlices; j++) {  
-            GLfloat theta = (j == iSlices) ? 0.0f : j * dtheta;  
-            GLfloat stheta = (GLfloat)(-sin(theta));  
-            GLfloat ctheta = (GLfloat)(cos(theta));  
-  
-            GLfloat x = stheta * srho;  
-            GLfloat y = ctheta * srho;  
-            GLfloat z = crho;  
-              
+		s = 0.0f;
+		for (j = 0; j <= iSlices; j++) {
+			GLfloat theta = (j == iSlices) ? 0.0f : j * dtheta;
+			GLfloat stheta = (GLfloat)(-sin(theta));
+			GLfloat ctheta = (GLfloat)(cos(theta));
+
+			GLfloat x = stheta * srho;
+			GLfloat y = ctheta * srho;
+			GLfloat z = crho;
+
 			m_pPoints[idx].x = x * m_fRadius;
 			m_pPoints[idx].y = y * m_fRadius;
 			m_pPoints[idx].z = z * m_fRadius;
@@ -57,9 +160,9 @@ CWireSphere::CWireSphere(const GLfloat fRadius, const int iSlices, const  int iS
 			m_pTex[idx].y = t; // 設定貼圖座標
 			idx++;
 
-            x = stheta * srhodrho;  
-            y = ctheta * srhodrho;  
-            z = crhodrho;
+			x = stheta * srhodrho;
+			y = ctheta * srhodrho;
+			z = crhodrho;
 
 			m_pPoints[idx].x = x * m_fRadius;
 			m_pPoints[idx].y = y * m_fRadius;
@@ -73,12 +176,12 @@ CWireSphere::CWireSphere(const GLfloat fRadius, const int iSlices, const  int iS
 			m_pTex[idx].x = s;
 			m_pTex[idx].y = t - dt; // 設定貼圖座標
 			idx++;
-			s += ds; 
-		}   
-		t -= dt;  
-	}  
+			s += ds;
+		}
+		t -= dt;
+	}
 	// 預設將所有的面都設定成灰色
-	for( int i = 0 ; i < m_iNumVtx ; i++ ) m_pColors[i] = vec4(-1.0f,-1.0f,-1.0f,1.0f);
+	for (int i = 0; i < m_iNumVtx; i++) m_pColors[i] = vec4(-1.0f, -1.0f, -1.0f, 1.0f);
 
 #ifdef LIGHTING_WITHCPU
 	// Default Set shader's name
@@ -98,7 +201,6 @@ CWireSphere::CWireSphere(const GLfloat fRadius, const int iSlices, const  int iS
 	SetMaterials(vec4(0), vec4(0.5f, 0.5f, 0.5f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	SetKaKdKsShini(0, 0.8f, 0.2f, 1);
 }
-
 // 回家自己寫
 void CWireSphere::RenderWithFlatShading(vec4 vLightPos, color4 vLightI)
 {

@@ -36,9 +36,6 @@
     <ClCompile Include="png_loader.cpp">
       <Filter>TextureLoader</Filter>
     </ClCompile>
-    <ClCompile Include="HW2.cpp">
-      <Filter>原始程式檔</Filter>
-    </ClCompile>
     <ClCompile Include="Common\CCamera.cpp">
       <Filter>Common</Filter>
     </ClCompile>
@@ -79,6 +76,15 @@
       <Filter>Loader</Filter>
     </ClCompile>
     <ClCompile Include="Common\C2DSprite.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Room1.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="HW3.cpp">
+      <Filter>原始程式檔</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Room.cpp">
       <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>
@@ -135,6 +141,9 @@
       <Filter>Loader</Filter>
     </ClInclude>
     <ClInclude Include="Common\C2DSprite.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Room.h">
       <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>

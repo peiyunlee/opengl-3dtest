@@ -20,9 +20,11 @@ private:
 	int  m_iIndex;
 
 public:
-	CWireSphere(const GLfloat fRadius=1.0f, const int iSlices=12,const  int iStacks = 6);
+	//CWireSphere(const GLfloat fRadius=1.0f, const int iSlices=12,const  int iStacks = 6);
+	CWireSphere();
 	~CWireSphere();
 
+	void SetDefault(const GLfloat fRadius, const int iSlices, const  int iStacks);
 	void Update(float dt, point4 vLightPos, color4 vLightI);
 	void Update(float dt, const LightSource &Lights);
 	void Update(const LightSource *Lights, float dt);
