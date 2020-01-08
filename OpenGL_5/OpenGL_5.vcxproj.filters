@@ -81,11 +81,11 @@
     <ClCompile Include="Common\Room1.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="HW3.cpp">
-      <Filter>原始程式檔</Filter>
-    </ClCompile>
     <ClCompile Include="Common\Room.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="HW2.cpp">
+      <Filter>原始程式檔</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
