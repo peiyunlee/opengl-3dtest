@@ -21,15 +21,15 @@ typedef struct LightSourceParameters
 	color4 diffuse;
 	color4 specular;
 	point4 position;
-	point4 halfVector;
+	//point4 halfVector;
 	vec3 spotTarget;
 	vec3 spotDirection;
 	float spotExponent;
 	float spotCutoff; // (range: [0.0,90.0], 180.0)  
 	float spotCosCutoff; // (range: [1.0,0.0],-1.0)  
-	float constantAttenuation;
-	float linearAttenuation;
-	float quadraticAttenuation;
+	//float constantAttenuation;
+	//float linearAttenuation;
+	//float quadraticAttenuation;
 	int isLighting;
 
 	void UpdateDirection() {

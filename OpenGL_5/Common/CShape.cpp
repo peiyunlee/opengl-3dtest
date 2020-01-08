@@ -102,12 +102,9 @@ void CShape::SetAPI() {
 	m_uiLightInView[0] = glGetUniformLocation(m_uiProgram, "LightInView[0]");
 	glUniform4fv(m_uiLightInView[0], 1, m_vLightInView[0]);
 
-	m_uiDiffuseProduct[0] = glGetUniformLocation(m_uiProgram, "DiffuseProduct[0]");
-	glUniform4fv(m_uiDiffuseProduct[0], 1, m_DiffuseProduct[0]);
-
-	m_uiDiffuse[0] = glGetUniformLocation(m_uiProgram, "Diffuse[0]");
-	glUniform4fv(m_uiDiffuse[0], 1, m_Diffuse[0]);
-
+	m_uiDiffuse[0] = glGetUniformLocation(m_uiProgram, "DiffuseProduct[0]");
+	glUniform4fv(m_uiDiffuse[0], 1, m_DiffuseProduct[0]);
+	
 	m_uiSpecular[0] = glGetUniformLocation(m_uiProgram, "SpecularProduct[0]");
 	glUniform4fv(m_uiSpecular[0], 1, m_SpecularProduct[0]);
 
@@ -117,27 +114,21 @@ void CShape::SetAPI() {
 	m_uiAmbient[0] = glGetUniformLocation(m_uiProgram, "AmbientProduct[0]");
 	glUniform4fv(m_uiAmbient[0], 1, m_AmbientProduct[0]);
 
-	m_uiLightType[0] = glGetUniformLocation(m_uiProgram, "lightType[0]");
-	glUniform1i(m_uiLightType[0], lightType[0]);
-
-	m_uiLightDir[0] = glGetUniformLocation(m_uiProgram, "LightDir[0]");
-	glUniform4fv(m_uiLightDir[0], 1, m_LightDir[0]);
-
-	m_uiSpotExponent[0] = glGetUniformLocation(m_uiProgram, "spotExponent[0]");
-	glUniform1f(m_uiSpotExponent[0], m_SpotExponent[0]);
-
 	m_uiLighting[0] = glGetUniformLocation(m_uiProgram, "iLighting[0]");
 	glUniform1i(m_uiLighting[0], m_iLighting[0]);
+	
+	m_uivSpotTarget[0] = glGetUniformLocation(m_uiProgram, "SpotTarget[0]");
+	glUniform4fv(m_uivSpotTarget[0], 1, m_vSpotTarget[0]);
+
+	m_uiLightType[0] = glGetUniformLocation(m_uiProgram, "lightType[0]");
+	glUniform1i(m_uiLightType[0], lightType[0]);
 
 	/////Light1
 	m_uiLightInView[1] = glGetUniformLocation(m_uiProgram, "LightInView[1]");
 	glUniform4fv(m_uiLightInView[1], 1, m_vLightInView[1]);
 
-	m_uiDiffuseProduct[1] = glGetUniformLocation(m_uiProgram, "DiffuseProduct[1]");
-	glUniform4fv(m_uiDiffuseProduct[1], 1, m_DiffuseProduct[1]);
-
-	m_uiDiffuse[1] = glGetUniformLocation(m_uiProgram, "Diffuse[1]");
-	glUniform4fv(m_uiDiffuse[1], 1, m_Diffuse[1]);
+	m_uiDiffuse[1] = glGetUniformLocation(m_uiProgram, "DiffuseProduct[1]");
+	glUniform4fv(m_uiDiffuse[1], 1, m_DiffuseProduct[1]);
 
 	m_uiSpecular[1] = glGetUniformLocation(m_uiProgram, "SpecularProduct[1]");
 	glUniform4fv(m_uiSpecular[1], 1, m_SpecularProduct[1]);
@@ -148,27 +139,20 @@ void CShape::SetAPI() {
 	m_uiAmbient[1] = glGetUniformLocation(m_uiProgram, "AmbientProduct[1]");
 	glUniform4fv(m_uiAmbient[1], 1, m_AmbientProduct[1]);
 
+	m_uiLighting[1] = glGetUniformLocation(m_uiProgram, "iLighting[1]");
+	glUniform1i(m_uiLighting[0], m_iLighting[1]);
+
+	m_uivSpotTarget[1] = glGetUniformLocation(m_uiProgram, "SpotTarget[1]");
+	glUniform4fv(m_uivSpotTarget[0], 1, m_vSpotTarget[1]);
+
 	m_uiLightType[1] = glGetUniformLocation(m_uiProgram, "lightType[1]");
 	glUniform1i(m_uiLightType[1], lightType[1]);
-
-	m_uiLightDir[1] = glGetUniformLocation(m_uiProgram, "LightDir[1]");
-	glUniform4fv(m_uiLightDir[1], 1, m_LightDir[1]);
-
-	m_uiSpotExponent[1] = glGetUniformLocation(m_uiProgram, "spotExponent[1]");
-	glUniform1f(m_uiSpotExponent[1], m_SpotExponent[1]);
-
-	m_uiLighting[1] = glGetUniformLocation(m_uiProgram, "iLighting[1]");
-	glUniform1i(m_uiLighting[1], m_iLighting[1]);
-
 	/////Light2
 	m_uiLightInView[2] = glGetUniformLocation(m_uiProgram, "LightInView[2]");
 	glUniform4fv(m_uiLightInView[2], 1, m_vLightInView[2]);
 
-	m_uiDiffuseProduct[2] = glGetUniformLocation(m_uiProgram, "DiffuseProduct[2]");
-	glUniform4fv(m_uiDiffuseProduct[2], 1, m_DiffuseProduct[2]);
-
-	m_uiDiffuse[2] = glGetUniformLocation(m_uiProgram, "Diffuse[2]");
-	glUniform4fv(m_uiDiffuse[2], 1, m_Diffuse[2]);
+	m_uiDiffuse[2] = glGetUniformLocation(m_uiProgram, "DiffuseProduct[2]");
+	glUniform4fv(m_uiDiffuse[2], 1, m_DiffuseProduct[2]);
 
 	m_uiSpecular[2] = glGetUniformLocation(m_uiProgram, "SpecularProduct[2]");
 	glUniform4fv(m_uiSpecular[2], 1, m_SpecularProduct[2]);
@@ -179,27 +163,20 @@ void CShape::SetAPI() {
 	m_uiAmbient[2] = glGetUniformLocation(m_uiProgram, "AmbientProduct[2]");
 	glUniform4fv(m_uiAmbient[2], 1, m_AmbientProduct[2]);
 
-	m_uiLightType[2] = glGetUniformLocation(m_uiProgram, "lightType[2]");
-	glUniform1i(m_uiLightType[2], lightType[2]);
-
-	m_uiLightDir[2] = glGetUniformLocation(m_uiProgram, "LightDir[2]");
-	glUniform4fv(m_uiLightDir[2], 1, m_LightDir[2]);
-
-	m_uiSpotExponent[2] = glGetUniformLocation(m_uiProgram, "spotExponent[2]");
-	glUniform1f(m_uiSpotExponent[2], m_SpotExponent[2]);
-
 	m_uiLighting[2] = glGetUniformLocation(m_uiProgram, "iLighting[2]");
 	glUniform1i(m_uiLighting[2], m_iLighting[2]);
 
-	/////Light3
+	m_uivSpotTarget[2] = glGetUniformLocation(m_uiProgram, "SpotTarget[2]");
+	glUniform4fv(m_uivSpotTarget[2], 1, m_vSpotTarget[2]);
+
+	m_uiLightType[2] = glGetUniformLocation(m_uiProgram, "lightType[2]");
+	glUniform1i(m_uiLightType[2], lightType[2]);
+	/////Light2
 	m_uiLightInView[3] = glGetUniformLocation(m_uiProgram, "LightInView[3]");
 	glUniform4fv(m_uiLightInView[3], 1, m_vLightInView[3]);
 
-	m_uiDiffuseProduct[3] = glGetUniformLocation(m_uiProgram, "DiffuseProduct[3]");
-	glUniform4fv(m_uiDiffuseProduct[3], 1, m_DiffuseProduct[3]);
-
-	m_uiDiffuse[3] = glGetUniformLocation(m_uiProgram, "Diffuse[3]");
-	glUniform4fv(m_uiDiffuse[3], 1, m_Diffuse[3]);
+	m_uiDiffuse[3] = glGetUniformLocation(m_uiProgram, "DiffuseProduct[3]");
+	glUniform4fv(m_uiDiffuse[3], 1, m_DiffuseProduct[3]);
 
 	m_uiSpecular[3] = glGetUniformLocation(m_uiProgram, "SpecularProduct[3]");
 	glUniform4fv(m_uiSpecular[3], 1, m_SpecularProduct[3]);
@@ -210,17 +187,14 @@ void CShape::SetAPI() {
 	m_uiAmbient[3] = glGetUniformLocation(m_uiProgram, "AmbientProduct[3]");
 	glUniform4fv(m_uiAmbient[3], 1, m_AmbientProduct[3]);
 
-	m_uiLightType[3] = glGetUniformLocation(m_uiProgram, "lightType[3]");
-	glUniform1i(m_uiLightType[3], lightType[3]);
-
-	m_uiLightDir[3] = glGetUniformLocation(m_uiProgram, "LightDir[3]");
-	glUniform4fv(m_uiLightDir[3], 1, m_LightDir[3]);
-
-	m_uiSpotExponent[3] = glGetUniformLocation(m_uiProgram, "spotExponent[3]");
-	glUniform1f(m_uiSpotExponent[3], m_SpotExponent[3]);
-
 	m_uiLighting[3] = glGetUniformLocation(m_uiProgram, "iLighting[3]");
 	glUniform1i(m_uiLighting[3], m_iLighting[3]);
+
+	m_uivSpotTarget[3] = glGetUniformLocation(m_uiProgram, "SpotTarget[3]");
+	glUniform4fv(m_uivSpotTarget[3], 1, m_vSpotTarget[3]);
+
+	m_uiLightType[3] = glGetUniformLocation(m_uiProgram, "lightType[3]");
+	glUniform1i(m_uiLightType[3], lightType[3]);
 }
 
 void CShape::DrawingSetShader()
@@ -240,15 +214,13 @@ void CShape::DrawingSetShader()
 	for (int i = 0; i < LIGHTCOUNT; i++)
 	{
 		glUniform1i(m_uiLightType[i], lightType[i]);
-		glUniform1f(m_uiSpotExponent[i], m_SpotExponent[i]);
-		glUniform3fv(m_uiLightDir[i], 1, m_LightDir[i]);
 		glUniform4fv(m_uiLightInView[i], 1, m_vLightInView[i]);
-		glUniform4fv(m_uiDiffuseProduct[i], 1, m_DiffuseProduct[i]);
-		glUniform4fv(m_uiDiffuse[i], 1, m_Diffuse[i]);
+		glUniform4fv(m_uiDiffuse[i], 1, m_DiffuseProduct[i]);
 		glUniform4fv(m_uiSpecular[i], 1, m_SpecularProduct[i]);
 		glUniform1f(m_uiSpotCosCutoff[i], m_spotCosCutoff[i]);
 		glUniform4fv(m_uiAmbient[i], 1, m_AmbientProduct[i]);
 		glUniform1i(m_uiLighting[i], m_iLighting[i]);
+		glUniform4fv(m_uivSpotTarget[i], 1, m_vSpotTarget[i]);
 	}
 	glUniform1f(m_uiShininess, m_Material.shininess);
 #endif
@@ -264,21 +236,20 @@ void CShape::DrawingWithoutSetShader()
 		glUniformMatrix4fv(m_uiProjection, 1, GL_TRUE, m_mxProjection);
 		m_bProjUpdated = false;
 	}
+
 #ifdef LIGHTING_WITHGPU
 
 	glUniform4fv(m_uiColor, 1, m_fColor);
 	for (int i = 0; i < LIGHTCOUNT; i++)
 	{
 		glUniform1i(m_uiLightType[i], lightType[i]);
-		glUniform1f(m_uiSpotExponent[i], m_SpotExponent[i]);
-		glUniform3fv(m_uiLightDir[i], 1, m_LightDir[i]);
 		glUniform4fv(m_uiLightInView[i], 1, m_vLightInView[i]);
-		glUniform4fv(m_uiDiffuseProduct[i], 1, m_DiffuseProduct[i]);
+		glUniform4fv(m_uiDiffuse[i], 1, m_DiffuseProduct[i]);
 		glUniform4fv(m_uiSpecular[i], 1, m_SpecularProduct[i]);
 		glUniform1f(m_uiSpotCosCutoff[i], m_spotCosCutoff[i]);
 		glUniform4fv(m_uiAmbient[i], 1, m_AmbientProduct[i]);
-		glUniform4fv(m_uiDiffuse[i], 1, m_Diffuse[i]);
 		glUniform1i(m_uiLighting[i], m_iLighting[i]);
+		glUniform4fv(m_uivSpotTarget[i], 1, m_vSpotTarget[i]);
 	}
 	glUniform1f(m_uiShininess, m_Material.shininess);
 #endif

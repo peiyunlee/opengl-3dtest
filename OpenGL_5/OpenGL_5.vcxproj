@@ -119,16 +119,9 @@
     <ClInclude Include="ObjLoader.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="fsCubeMapping.glsl" />
-    <None Include="fsNormalMapLighting.glsl" />
     <None Include="fsPerPixelLighting.glsl" />
-    <None Include="fsPerVtxLighting.glsl" />
     <None Include="fsVtxNormal.glsl" />
-    <None Include="vsCubeMapping.glsl" />
-    <None Include="vsNormalMapLighting.glsl" />
     <None Include="vsPerPixelLighting.glsl" />
-    <None Include="vsPerVtxLighting.glsl" />
-    <None Include="vsVtxNormal.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="SOIL\Release\SOIL.lib" />

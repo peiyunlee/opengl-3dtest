@@ -56,26 +56,25 @@ protected:
 	GLuint  m_uiLightInView[LIGHTCOUNT];	 // 光源在 shader 的位置
 	GLuint  m_uiAmbient[LIGHTCOUNT];		 // light's ambient  與 Object's ambient  與 ka 的乘積
 	GLuint  m_uiDiffuse[LIGHTCOUNT];
-	GLuint  m_uiDiffuseProduct[LIGHTCOUNT];		 // light's diffuse  與 Object's diffuse  與 kd 的乘積
 	GLuint  m_uiSpecular[LIGHTCOUNT];	 // light's specular 與 Object's specular 與 ks 的乘積
+	
 	GLuint  m_uiShininess;
 	GLuint  m_uiLighting[LIGHTCOUNT];
+
+	point4  m_vSpotTarget[LIGHTCOUNT];
+	GLuint  m_uivSpotTarget[LIGHTCOUNT];// 光源目標在 shader 的位置
+	
 	GLuint  m_uiSpotCosCutoff[LIGHTCOUNT];
+	//GLuint  m_uiSpotExponent[LIGHTCOUNT];
 	GLuint  m_uiLightType[LIGHTCOUNT];
-	GLuint  m_uiLightDir[LIGHTCOUNT];
-	GLuint  m_uiSpotExponent[LIGHTCOUNT];
 
-	LightSource m_Light1;
-
-	color4 m_Diffuse[LIGHTCOUNT];
 	color4 m_AmbientProduct[LIGHTCOUNT];
 	color4 m_DiffuseProduct[LIGHTCOUNT];
 	color4 m_SpecularProduct[LIGHTCOUNT];
-	vec3 m_LightDir[LIGHTCOUNT];
-	float m_SpotExponent[LIGHTCOUNT];
+	//float m_SpotExponent[LIGHTCOUNT];
 	float m_spotCosCutoff[LIGHTCOUNT];
+	int  m_iLighting[LIGHTCOUNT];	// 設定是否要打燈
 	int lightType[LIGHTCOUNT];
-	int    m_iLighting[LIGHTCOUNT];	// 設定是否要打燈
 #endif
 
 	// For Matrices
@@ -93,9 +92,9 @@ protected:
 	// 要變更上色模式，利用 SetShadingMode 來改變
 	int m_iMode;		
 
-	void		CreateBufferObject();
-	void		DrawingSetShader();
-	void		DrawingWithoutSetShader();
+	void CreateBufferObject();
+	void DrawingSetShader();
+	void DrawingWithoutSetShader();
 	void SetAPI();
 
 

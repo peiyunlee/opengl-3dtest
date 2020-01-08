@@ -124,28 +124,44 @@ void ModelPool::Update(float dt, const LightSource &Lights)
 
 void ModelPool::Update(const LightSource *Lights, float dt)
 {
+	//if (m_bViewUpdated || m_bTRSUpdated) {
+	//	m_mxMVFinal = m_mxView * m_mxTRS;
+	//	m_mxMV3X3Final = mat3(	// 只取前面的 3X3 矩陣的內容
+	//		m_mxMVFinal._m[0].x, m_mxMVFinal._m[1].x, m_mxMVFinal._m[2].x,
+	//		m_mxMVFinal._m[0].y, m_mxMVFinal._m[1].y, m_mxMVFinal._m[2].y,
+	//		m_mxMVFinal._m[0].z, m_mxMVFinal._m[1].z, m_mxMVFinal._m[2].z);
+	//	m_bViewUpdated = m_bTRSUpdated = false;
+	//}
+
+
+
+	//for (int i = 0; i < LIGHTCOUNT; i++)
+	//{
+	//	m_AmbientProduct[i] = m_Material.ka * m_Material.ambient  * Lights[i].ambient;
+	//	lightType[i] = Lights[i].type;
+	//	m_LightDir[i] = m_mxMV3X3Final * Lights[i].spotDirection;
+	//	m_SpotExponent[i] = Lights[i].spotExponent;
+	//	m_vLightInView[i] = m_mxView * Lights[i].position;
+	//	m_DiffuseProduct[i] = m_Material.kd * m_Material.diffuse  * Lights[i].diffuse;
+	//	m_Diffuse[i] = Lights[i].diffuse;
+	//	m_SpecularProduct[i] = m_Material.ks * m_Material.specular * Lights[i].specular;
+	//	m_spotCosCutoff[i] = Lights[i].spotCosCutoff;
+	//	m_iLighting[i] = Lights[i].isLighting;
+	//}
 	if (m_bViewUpdated || m_bTRSUpdated) {
 		m_mxMVFinal = m_mxView * m_mxTRS;
-		m_mxMV3X3Final = mat3(	// 只取前面的 3X3 矩陣的內容
-			m_mxMVFinal._m[0].x, m_mxMVFinal._m[1].x, m_mxMVFinal._m[2].x,
-			m_mxMVFinal._m[0].y, m_mxMVFinal._m[1].y, m_mxMVFinal._m[2].y,
-			m_mxMVFinal._m[0].z, m_mxMVFinal._m[1].z, m_mxMVFinal._m[2].z);
 		m_bViewUpdated = m_bTRSUpdated = false;
 	}
 
-
-
 	for (int i = 0; i < LIGHTCOUNT; i++)
 	{
-		m_AmbientProduct[i] = m_Material.ka * m_Material.ambient  * Lights[i].ambient;
 		lightType[i] = Lights[i].type;
-		m_LightDir[i] = m_mxMV3X3Final * Lights[i].spotDirection;
-		m_SpotExponent[i] = Lights[i].spotExponent;
-		m_vLightInView[i] = m_mxView * Lights[i].position;
+		m_vLightInView[i] = m_mxView * Lights[i].position;		// 將 Light 轉換到鏡頭座標再傳
+		m_vSpotTarget[i] = m_mxView * Lights[i].spotTarget;
+		// 算出 AmbientProduct DiffuseProduct 與 SpecularProduct 的內容
+		m_AmbientProduct[i] = m_Material.ka * m_Material.ambient  * Lights[i].ambient;
 		m_DiffuseProduct[i] = m_Material.kd * m_Material.diffuse  * Lights[i].diffuse;
-		m_Diffuse[i] = Lights[i].diffuse;
 		m_SpecularProduct[i] = m_Material.ks * m_Material.specular * Lights[i].specular;
-		m_spotCosCutoff[i] = Lights[i].spotCosCutoff;
 		m_iLighting[i] = Lights[i].isLighting;
 	}
 

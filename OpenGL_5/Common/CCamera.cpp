@@ -152,10 +152,10 @@ void CCamera::moveForward() {
 	viewDirection = normalize(viewDirection);
 	viewPosition += moveMentSpeed * viewDirection;
 	lookAt += moveMentSpeed * viewDirection;
-	updateViewLookAt(viewPosition, lookAt);
-	/*if (viewPosition.z > -9.0f && viewPosition.z < 9.0f && viewPosition.x > -9.0f && viewPosition.x < 9.0f) {
+	//updateViewLookAt(viewPosition, lookAt);
+	if (viewPosition.z > -8.5f && viewPosition.z < 8.5f && viewPosition.x > -8.5f && viewPosition.x < 8.5f) {
 		updateViewLookAt(viewPosition, lookAt);
-	}*/
+	}
 
 	//Print(viewPosition);
 }
@@ -168,8 +168,8 @@ void CCamera::moveBackward() {
 	viewDirection = normalize(viewDirection);
 	viewPosition += -moveMentSpeed * viewDirection;
 	lookAt += -moveMentSpeed * viewDirection;
-	updateViewLookAt(viewPosition, lookAt);
-	/*if (viewPosition.z > -9.0f && viewPosition.z < 9.0f && viewPosition.x > -9.0f && viewPosition.x < 9.0f) {
+	//updateViewLookAt(viewPosition, lookAt);
+	if (viewPosition.z > -8.5f && viewPosition.z < 8.5f && viewPosition.x > -8.5f && viewPosition.x < 8.5f) {
 		updateViewLookAt(viewPosition, lookAt);
-	}*/
+	}
 }

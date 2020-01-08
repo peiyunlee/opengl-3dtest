@@ -76,9 +76,9 @@ float g_fElapsedTime = 0;
 float g_fLightRadius = 5;
 float g_fLightTheta = 0;
 
-float g_fLightR = 1.0f;
-float g_fLightG = 1.0f;
-float g_fLightB = 1.0f;
+float g_fLightR = 0.5f;
+float g_fLightG = 0.5f;
+float g_fLightB = 0.5f;
 
 point4  g_vEye(g_fRadius*sin(g_fTheta)*cos(g_fPhi), g_fRadius*sin(g_fTheta)*sin(g_fPhi), g_fRadius*cos(g_fTheta), 1.0);
 point4  g_vAt(0.0, 0.0, 0.0, 1.0);
@@ -90,68 +90,52 @@ LightSource g_Light[LIGHTCOUNT] = {
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // diffuse
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
-		point4(g_fLightRadius, g_fLightRadius+2.0, 0.0f, 1.0f),   // position
-		point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
-		vec3(0.0f, 0.0f, 0.0f),			  //spotTarget
-		vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
-		1.0f	,	// spotExponent(parameter e); cos^(e)(phi) 
-		45.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
-		1.0f	,	// spotCosCutoff; // (range: [1.0,0.0],-1.0), 照明方向與被照明點之間的角度取 cos 後, cut off 的值
-		1	,	// constantAttenuation	(a + bd + cd^2)^-1 中的 a, d 為光源到被照明點的距離
-		0	,	// linearAttenuation	    (a + bd + cd^2)^-1 中的 b
-		0	,	// quadraticAttenuation (a + bd + cd^2)^-1 中的 c
-		1
+		point4(g_fLightRadius, g_fLightRadius+6.0, 0.0f, 1.0f),   // position
+		vec3(0.0f, 0.0f, 0.0f),	  //spotTarget
+		vec3(0.0f, 0.0f, 0.0f),  //spotDirection
+		1.0f,	// spotExponent(parameter e); cos^(e)(phi) 
+		30.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
+		0.0f,	// spotCosCutoff; // (range: [1.0,0.0],-1.0), 照明方向與被照明點之間的角度取 cos 後, cut off 的值
+		1,
 	},
 	{
 		1,
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
 		color4(1, 0, 0.0, 1.0f), // diffuse
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
-		point4(-5.0f, 8.0f, -5.0f, 1.0f),   // position
-		point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
-		vec3(-7.0f, 2.0f, -7.0f),			  //spotTarget
+		point4(-2.0f, 5.0f, -2.0f, 1.0f),   // position
+		vec3(-6.0f, 3.0f, -6.0f),			  //spotTarget
 		vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
-		1.0f	,	// spotExponent(parameter e); cos^(e)(phi) 
-		45.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
-		0.707f	,	// spotCosCutoff; // (range: [1.0,0.0],-1.0), 照明方向與被照明點之間的角度取 cos 後, cut off 的值
-		1	,	// constantAttenuation	(a + bd + cd^2)^-1 中的 a, d 為光源到被照明點的距離
-		0	,	// linearAttenuation	    (a + bd + cd^2)^-1 中的 b
-		0	,	// quadraticAttenuation (a + bd + cd^2)^-1 中的 c
-		1
+		1.0f,	// spotExponent(parameter e); cos^(e)(phi) 
+		60.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
+		0.707f,	// spotCosCutoff; // (range: [1.0,0.0],-1.0), 照明方向與被照明點之間的角度取 cos 後, cut off 的值
+		1,
 	},
 	{
 		1,
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
-		color4(0, 0, 0, 1.0f), // diffuse
+		color4(0, 1.0, 0, 1.0f), // diffuse
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
-		point4(7.0f, 3.0f, -7.0f, 1.0f),   // position
-		point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
-		vec3(7.0f, 0.0f, -7.0f),			  //spotTarget
-		vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
-		1.0f	,	// spotExponent(parameter e); cos^(e)(phi) 
+		point4(4.0f, 3.0f, -4.0f, 1.0f),   // position
+		vec3(10.0f, -1.0f, -10.0f),  //spotTarget
+		vec3(0.0f, 0.0f, 0.0f),  //spotDirection
+		1.0f,	// spotExponent(parameter e); cos^(e)(phi) 
 		45.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
-		0.707f	,	// spotCosCutoff; // (range: [1.0,0.0],-1.0), 照明方向與被照明點之間的角度取 cos 後, cut off 的值
-		1	,	// constantAttenuation	(a + bd + cd^2)^-1 中的 a, d 為光源到被照明點的距離
-		0	,	// linearAttenuation	    (a + bd + cd^2)^-1 中的 b
-		0	,	// quadraticAttenuation (a + bd + cd^2)^-1 中的 c
-		1
+		0.707f,	// spotCosCutoff; // (range: [1.0,0.0],-1.0), 照明方向與被照明點之間的角度取 cos 後, cut off 的值
+		1,
 	},
 	{
 		1,
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
-		color4(0, 0, 0, 1.0f), // diffuse
+		color4(0, 0, 1.0, 1.0f), // diffuse
 		color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
-		point4(-5.0f, 3.0f, 5.0f, 1.0f),   // position
-		point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
-		vec3(-10.0f, 0.0f, 10.0f),			  //spotTarget
-		vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
-		1.0f	,	// spotExponent(parameter e); cos^(e)(phi) 
-		45.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
-		0.707f	,	// spotCosCutoff; // (range: [1.0,0.0],-1.0), 照明方向與被照明點之間的角度取 cos 後, cut off 的值
-		1	,	// constantAttenuation	(a + bd + cd^2)^-1 中的 a, d 為光源到被照明點的距離
-		0	,	// linearAttenuation	    (a + bd + cd^2)^-1 中的 b
-		0	,	// quadraticAttenuation (a + bd + cd^2)^-1 中的 c
-		1
+		point4(-2.0f, 5.0f, 2.0f, 1.0f),   // position
+		vec3(-10.0f, -1.0f, 10.0f),  //spotTarget
+		vec3(0.0f, 0.0f, 0.0f),	  //spotDirection
+		1.0f,	// spotExponent(parameter e); cos^(e)(phi) 
+		60.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
+		0.707f,	// spotCosCutoff; // (range: [1.0,0.0],-1.0), 照明方向與被照明點之間的角度取 cos 後, cut off 的值
+		1,
 	},
 };
 
@@ -250,7 +234,7 @@ void GL_Display( void )
 	g_BackWall->Draw();
 	g_TopWall->Draw();
 
-	for (int i = 1; i < 1; i++)
+	for (int i = 0; i < LIGHTCOUNT; i++)
 	{
 		g_pLight[i]->Draw();
 		g_LightLine[i]->Draw();
@@ -360,7 +344,7 @@ void Win_Keyboard( unsigned char key, int x, int y )
 // Part 2 : for single light source
 	case 65: // A key
 	case 97: // a key
-		//g_bAutoRotating = !g_bAutoRotating;
+		g_bAutoRotating = !g_bAutoRotating;
 		break;
 	case 82: // R key
 		if( g_fLightR <= 0.95f ) g_fLightR += 0.05f;
@@ -626,29 +610,29 @@ void RoomObjGenerator() {
 	mxT = Translate(vT);
 	g_pCat = new ModelPool("Model/cat.obj", Type_3DMax);
 	g_pCat->SetTRSMatrix(mxT*RotateY(225.0f)*Scale(0.004f, 0.004f, 0.004f));
-	g_pCat ->SetMaterials(vec4(0), vec4(0.75f, 0.75f, 0.75f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	g_pCat ->SetMaterials(vec4(0.15f, 0.15f, 0.15f, 1.0f), vec4(0.5, 0.5, 0.5f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	g_pCat->SetKaKdKsShini(0.15f, 0.8f, 0.2f, 2);
 
 
 	vT.x = -6.0; vT.y = 0.5; vT.z = -6.0;
 	mxT = Translate(vT);
 	g_pDeer = new ModelPool("Model/deer.obj", Type_3DMax);
-	g_pDeer->SetTRSMatrix(mxT*RotateY(-45.0f)*Scale(0.004f, 0.004f, 0.004f));
-	g_pDeer->SetMaterials(vec4(0), vec4(0.75f, 0.75f, 0.75f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	g_pDeer->SetTRSMatrix(mxT*RotateY(315.0f)*Scale(0.004f, 0.004f, 0.004f));
+	g_pDeer->SetMaterials(vec4(0.15f, 0.15f, 0.15f, 1.0f), vec4(0.5, 0.5, 0.5f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	g_pDeer->SetKaKdKsShini(0.15f, 0.8f, 0.2f, 2);
 
 	vT.x = -6.0; vT.y = 0.5; vT.z = 6.0;
 	mxT = Translate(vT);
 	g_pWolf = new ModelPool("Model/wolf.obj", Type_3DMax);
 	g_pWolf->SetTRSMatrix(mxT*RotateY(45.0f)*Scale(0.007f, 0.007f, 0.007f));
-	g_pWolf->SetMaterials(vec4(0), vec4(0.75f, 0.75f, 0.75f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	g_pWolf->SetMaterials(vec4(0.15f, 0.15f, 0.15f, 1.0f), vec4(0.5, 0.5, 0.5f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	g_pWolf->SetKaKdKsShini(0.15f, 0.8f, 0.2f, 2);
 
 	vT.x = 0.0; vT.y = 0.5; vT.z = -0.0;
 	mxT = Translate(vT);
 	g_pRat = new ModelPool("Model/rat.obj", Type_3DMax);
 	g_pRat->SetTRSMatrix(mxT*RotateY(45.0f)*Scale(0.015f, 0.015f, 0.015f));
-	g_pRat->SetMaterials(vec4(0), vec4(0.75f, 0.75f, 0.75f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	g_pRat->SetMaterials(vec4(0.15f, 0.15f, 0.15f, 1.0f), vec4(0.5, 0.5, 0.5f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	g_pRat->SetKaKdKsShini(0.15f, 0.8f, 0.2f, 2);
 
 //	g_pSphere = new CSolidSphere(1, 16, 16);
@@ -698,7 +682,7 @@ void UIGenerator() {
 
 	//紅色按鈕
 	g_p2DBtn[3] = new C2DSprite; g_p2DBtn[3]->SetShader_2DUI();
-	vColor2D.x = 1; vColor2D.y = 1; vColor2D.z = 1; g_p2DBtn[3]->SetDefaultColor(vColor2D);
+	vColor2D.x = 0.85; vColor2D.y = 0.85; vColor2D.z = 0.85; g_p2DBtn[3]->SetDefaultColor(vColor2D);
 	mxT2D = Translate(0.8f, -0.85f, 0);
 	g_p2DBtn[3]->SetTRSMatrix(mxT2D*mxS2D);
 	g_p2DBtn[3]->SetViewMatrix(g_2DView);
@@ -710,21 +694,16 @@ void UIAction(vec2 pt) {
 		if (g_p2DBtn[0]->getButtonStatus()) {
 			printf("紅色關\n");
 			lighting[1] = false;
-			g_Light[1].ambient = color4(0, 0, 0, 0);
-			g_Light[1].diffuse = color4(0, 0, 0, 0);
-			g_Light[1].specular = color4(0, 0, 0, 0);
 		}
 		else {
 			printf("紅色開\n");
 			lighting[1] = true;
-			g_Light[1].diffuse.x = 1;
-			g_Light[1].ambient = color4(g_fLightR, g_fLightG, g_fLightB, 1.0f);
-			g_Light[1].specular = color4(g_fLightR, g_fLightG, g_fLightB, 1.0f);
 		}
+		g_Light[1].isLighting = lighting[1];
 	}
 	//藍色按鈕→控制主燈光的旋轉On/Off
 	if (g_p2DBtn[GREEN_BUTTON]->OnTouches(pt)) {
-		if (g_p2DBtn[2]->getButtonStatus()) {
+		if (g_p2DBtn[1]->getButtonStatus()) {
 			printf("綠色關\n");
 			lighting[2] = false;
 
@@ -735,6 +714,7 @@ void UIAction(vec2 pt) {
 			printf("綠色開\n");
 			lighting[2] = true;
 		}
+		g_Light[2].isLighting = lighting[2];
 	}
 	//綠色按鈕→控制所有側燈光的照明On/Off
 	if (g_p2DBtn[BLUE_BUTTON]->OnTouches(pt)) {
@@ -782,18 +762,20 @@ void UIAction(vec2 pt) {
 			g_Light4.ambient = color4(0.95f, 0.95f, 0.95f, 1.0f);
 			g_Light4.specular = color4(0.95f, 0.95f, 0.95f, 1.0f);*/
 		}
+		g_Light[3].isLighting = lighting[3];
 	}
 	//紅色按鈕→控制所有側燈光聚集於一點
 	if (g_p2DBtn[3]->OnTouches(pt)) {
 		if (g_p2DBtn[3]->getButtonStatus()) {
 			printf("白色官\n");
 			lighting[0] = false;
-			g_bAutoRotating = !g_bAutoRotating;
+			//g_bAutoRotating = !g_bAutoRotating;
 		}
 		else {
 			printf("白色開\n");
 			lighting[0] = true;
-			g_bAutoRotating = !g_bAutoRotating;
+			//g_bAutoRotating = !g_bAutoRotating;
 		}
+		g_Light[0].isLighting = lighting[0];
 	}
 }
